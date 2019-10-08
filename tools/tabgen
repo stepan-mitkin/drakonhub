@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+SCRIPT_FOLDER=`dirname $0`
+ARG_PATH=`realpath $1`
+
+echo $ARG_PATH
+
+node $SCRIPT_FOLDER/tg.js $ARG_PATH

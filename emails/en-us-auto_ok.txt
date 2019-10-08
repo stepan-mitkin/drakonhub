@@ -1,0 +1,22 @@
+Thanks! Your Payment Has Been Processed
+
+We’ve just processed your payment for your DrakonHub subscription.
+
+MES_ORDER_ID: VALUE_ORDER_ID
+MES_PRODUCT_NAME: VALUE_PRODUCT_NAME
+MES_PRICE_PER_USER: VALUE_PRICE_PER_USER
+MES_NUM_USERS: VALUE_NUM_USERS
+MES_MVA: VALUE_MVA
+MES_TOTAL: VALUE_TOTAL
+
+Customer support: drakon.editor@gmail.com
+
+Regards
+
+DrakonHub team
+https://drakonhub.com/
+
+DRAKON Labs Stepan Mitkin
+Reg. no. 915 415 431
+Løkentoppen 21, Kolsås 1352, Norway
+

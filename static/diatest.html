@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html ng-app="diaTestApp">
+
+<head>
+<meta charset="UTF-8">
+
+<title>DRAKON diagram test</title>
+
+<link rel="stylesheet" type="text/css" href="/static/reset.css"></link>
+<link rel="stylesheet" type="text/css" href="/static/common.css"></link>
+
+<style>
+
+.red_button {
+    background:#900000;
+    color:white;
+}
+
+.red_button:hover {
+    background:black;
+    color:white;
+}
+
+.green_button {
+    background:#00b000;
+    color:white;
+}
+
+.green_button:hover {
+    background:black;
+    color:white;
+}
+
+
+.critical_button {
+    background:#ff0000;
+}
+
+.critical_button:hover {
+    background:black;
+    color:white;
+}
+
+
+</style>
+
+</head>
+
+<body ng-controller="DiaTestCtrl as diatest">
+<div  style="display: none;">
+	<canvas id="dummyCanvas">
+	</canvas>
+	<canvas id="dummyOver">
+	</canvas>
+</div>
+<div style="height:360px; background:#e0e0ff;">
+	<div id="RunHeader" style="padding:5px;" ng-style="{'background': diatest.overall}">
+
+	<div id="RunHeaderIdle" ng-show="diatest.idle">
+	<div id="RunAllButton" class="cr_button green_button" ng-click="diatest.runAll()">Run all</div>
+	<div id="RunButton" class="cr_button" ng-click="diatest.run()">Run</div>
+	<div id="CreateButton" class="cr_button" ng-click="diatest.createTest()">New</div>
+	<div style="padding:5px; display:inline-block;">
+	{{diatest.status}}
+	</div>
+	</div>
+
+	<div id="RunHeaderRunning" ng-hide="diatest.idle">
+	<div id="CancelButton" class="cr_button red_button" ng-click="diatest.stop()">Stop</div>
+	<div style="padding:5px; display:inline-block;">
+	{{diatest.runStatus}}
+	</div>
+	</div>
+
+	</div>
+
+	<div id="CurrentFields" ng-show="diatest.idle && diatest.current">
+	<table class="form_table" style="width:100%;">
+		<tr>
+			<td style="width:90px">
+				<label for="group">Group</label>
+			</td>
+			<td>
+				<input ng-model="diatest.current.group" id="group" type="text" style="width:250px"/>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="name">Name</label></td>
+			<td><input ng-model="diatest.current.name"  id="name" type="text" style="width:500px"/></td>
+		</tr>
+		<tr>
+			<td><label for="diagram">Diagram</label></td>
+			<td><input ng-model="diatest.current.diagram"  id="diagram" type="text" style="width:500px"/></td>
+		</tr>
+		<tr>
+			<td><label for="action">Action</label></td>
+			<td><input ng-model="diatest.current.action"  id="action" type="text" style="width:500px"/></td>
+		</tr>
+		<tr>
+			<td><label for="args">Arguments</label></td>
+			<td><input ng-model="diatest.current.args"  id="args" type="text" style="width:500px"/></td>
+		</tr>
+		<tr>
+			<td><label for="expected">Expected</label></td>
+			<td><input ng-model="diatest.current.expected"  id="expected" type="text" style="width:500px"/></td>
+		</tr>
+		<tr>
+			<td><label for="actual">Actual</label></td>
+			<td><input readonly="true" ng-model="diatest.current.actual"  id="actual" type="text" style="width:500px"/></td>
+		</tr>
+	</table>
+	<p>
+	Message: {{diatest.current.status}} {{diatest.current.error}}
+	</p>
+	</div>
+
+	<div id="CurrentButtons" ng-show="diatest.idle && diatest.current">
+	<table class="form_table" style="width:100%;">
+		<tr>
+			<td style="width:50%;"><div id="SaveButton" class="cr_button" ng-click="diatest.saveTest()">Save</div></td>
+			<td style="width:50%; text-align:right;"><div id="DeleteButton" class="cr_button critical_button" ng-click="diatest.deleteTest()">Delete</div></td>
+		</tr>
+	</table>			
+	</div>
+</div>
+<div id="TestList" style="height:calc(100vh - 360px);background:white;overflow-y:scroll;" ng-show="diatest.idle">
+	<p ng-repeat="item in diatest.list">
+	<span ng-show="item.type == 'group'">
+	{{item.name}}
+	</span>
+	<span 
+		ng-hide="item.type == 'group'" 
+		style="cursor:pointer; margin-left:20px;"
+		ng-click="diatest.selectFixture(item)"
+		ng-style="{'background': diatest.itemBackground(item), 'color': diatest.itemColor(item)}"
+	>
+	{{item.name}}
+	</span>
+	</p>
+</div>
+
+
+<script src="/static/libs/angular.min.js"></script>
+<script src="/static/libs/angular-route.min.js"></script>
+
+<script src="/static/Config.js"></script>
+<script src="/static/CallTrace.js"></script>
+<script src="/static/HtmlUtils.js"></script>
+<script src="/static/Utils.js"></script>
+<script src="/static/Multitouch.js"></script>
+<script src="/static/PhysicalGraph.js"></script>
+<script src="/static/Items.js"></script>
+<script src="/static/Drakon.js"></script>
+<script src="/static/ViewWidget.js"></script>
+<script src="/static/Canvas.js"></script>
+<script src="/static/Editor.js"></script>
+<script src="/static/MsgBox.js"></script>
+<script src="/static/Behaviour.js"></script>
+<script src="/static/libs/mousetrap.js"></script>
+<script src="/static/Theme.js"></script>
+
+<script src="/static/diatest.js"></script>
+
+
+
+
+</body>

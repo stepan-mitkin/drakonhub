@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UI Widgets Test</title>
+
+<style>
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/* -- end of reset.css -- */
+
+td {
+	vertical-align: middle;
+}
+</style>
+
+<style>
+
+@font-face {
+	font-family: 'Arimo';
+	src: url('../static/fonts/Arimo-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'Arimo';
+	src: url('../static/fonts/Arimo-Italic.ttf') format('truetype');
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Arimo';
+	src: url('../static/fonts/Arimo-Bold.ttf') format('truetype');
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: 'Arimo';
+	src: url('../static/fonts/Arimo-BoldItalic.ttf') format('truetype');
+	font-style: italic;
+	font-weight: bold;
+}
+
+
+body, select, input {
+	font-family: Arimo, Arial;
+	font-size: 13pt;
+}
+
+strong {
+	font-weight: bold;
+}
+
+p {
+	margin:10px;
+	line-height: 130%;
+	text-align: justify;
+}
+
+h1 {
+	text-align: center;
+	
+	font-size:120%;
+	font-weight:bold;
+	margin: 5px;
+	margin-top:30px;
+}
+
+h3 {
+	text-align: left;
+	color: #455A64;
+	font-size:100%;
+	font-weight:bold;
+	margin: 5px;
+	margin-top:30px;
+}
+
+.center {
+	margin:auto;
+}
+
+.full_screen {
+	width:100%;
+	height:100vh;
+	position: absolute;
+	left:0px;
+	top:0px;
+}
+
+.abs {
+	position:absolute;
+	left:0px;
+	top:0px;
+	display:none;
+}
+
+
+.common_button {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.common_button:active {
+	transform: translate(0px, 2px);
+}
+
+.list_item {
+	cursor:pointer;
+	
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;	
+}
+
+.list_item:hover {
+	background:#E2EDF5;
+	color:black;
+}
+
+.list_item:active {
+	background:silver;
+	color:black;
+}
+
+.list_item_marked {
+	background: #B6DBF6;
+	color:black;
+	cursor: pointer;
+}
+
+.list_item_marked:hover {
+	background:#E2EDF5;
+	color:black;
+}
+
+.list_item_marked:active {
+	background:silver;
+	color:black;
+}
+
+.black_hover:hover {
+	background:#455A64;
+}
+
+.internal_button {
+	background:#455A64;
+	color: white;
+	text-align: center;
+	padding:3px;
+	border-radius:4px;
+}
+
+
+#tooltip {
+	position: absolute;
+	background-color: #ffffdd;
+	color: black;
+	padding: 5px;
+	border: solid 1px #909000;
+	border-radius: 5px;
+	white-space: nowrap;
+}
+
+.dumb {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+</style>
+
+</head>
+
+<body id="home">
+	
+	<div id="tree_container" style="display:inline-block; position:absolute; left:20px; top:20px; width:340px; height:340px; background:#000090; overflow:hidden;"></div>
+	<div id="container3" style="display:inline-block; position:absolute; left:20px; top:380px; width:340px; height:340px; background:#000090; overflow:hidden;"></div>
+	<div id="container2" style="display:inline-block; position:absolute; left:380px; top:20px; width:500px; height:640px; background:#000090; overflow:hidden;"></div>
+	
+	<div id="container4" style="display:inline-block; position:absolute; left:20px; top:750px; width:340px; height:400px; background:white; overflow:hidden; border:solid 1px black;"></div>
+	<div id="container5" style="display:inline-block; position:absolute; left:380px; top:750px; width:540px; height:400px; background:white; overflow:hidden; border:solid 1px black;"></div>
+	
+	<div id="container6" style="display:inline-block; position:absolute; left:20px; top:1170px; width:340px; height:400px; background:white; overflow:hidden; border:solid 1px black;"></div>
+	<div id="container7" style="display:inline-block; position:absolute; left:380px; top:1170px; width:540px; height:400px; background:white; overflow:hidden; border:solid 1px black;"></div>
+	
+	<div id="container8" style="display:inline-block; position:absolute; left:20px; top:1590px; width:340px; height:400px; background:white; overflow:hidden; border:solid 1px black;"></div>
+	<div id="container9" style="display:inline-block; position:absolute; left:380px; top:1590px; width:540px; height:400px; background:white; overflow:hidden; border:solid 1px black;"></div>
+	
+	<div id="container10" style="display:inline-block; position:absolute; left:20px; top:2010px; height:400px; background:white; overflow:hidden; border:solid 1px black;"></div>
+	<div id="container10dummy" style="display:inline-block; position:absolute; left:20px; top:2430px; height:40px; width:900px; background:#ffffd0; overflow:hidden; border:none;"></div>
+	
+	<div id="tooltip" style="display: none;">
+	</div>
+
+	<script src="../static/TabGen4.js"></script>
+	<script src="../static/DraWidgets.js"></script>
+	<script src="../static/Utils.js"></script>
+	<script src="../static/HtmlUtils.js"></script>
+	<script src="../static/ToolTip.js"></script>
+	<script>
+		function buildMegaWidget(div) {
+			div.innerHTML = "<div style='text-align:center; font-size:120%; font-weight:bold; margin:10px;'>Header</div><div style='line-height:120%;'>This course provides a broad introduction to machine learning, datamining, and statistical pattern recognition. Topics include: (i) Supervised learning (parametric/non-parametric algorithms, support vector machines, kernels, neural networks). (ii) Unsupervised learning (clustering, dimensionality reduction, recommender systems, deep learning).</div>"
+		}
+		
+		function createUi10() {
+			var yellow = {
+					id: "yellow",
+					tab: "Yellow",
+					type: "dummy",
+					style: {background:"yellow"}
+			}
+			var green = {
+					id: "green",
+					tab: "Green",
+					type: "dummy",
+					style: {background:"green"}
+			}			
+			
+			return {
+				id: "split",
+				type: "splitter",
+				leftChild: {
+					type: "pane",
+					text: "left",
+					id: "left_pane",
+					kid: { type: "dummy", style: {background: "GreenYellow"}}
+				},
+				middleChild: { type: "dummy", style: {background: "Gold"}},
+				rightChild: {
+					type: "multi_pane",
+					id: "right_pane",
+					kids: [yellow, green]
+				}
+			}
+		}
+		
+		function createUi09() {
+			var d3 = {
+				type: "page",
+				style: {
+					background: "white"
+				},
+				padding: 5,
+				kids: [
+					{ type: "edit", editType: "text", water: "This is water" },
+					{ type: "edit", editType: "password", water: "Password" },
+					{ type: "dummy", height:30, style:{ background: "red"}},
+					{ type: "dummy", height:30, style:{ background: "yellow"}},
+					{ type: "custom", builder: buildMegaWidget },
+					{ type: "wlabel", text: "Short label"},
+					{ type: "wlabel", text: "."},
+					{ type: "wlabel", text: "Machine learning is the science of getting computers to act withou"},
+					{ type: "wbutton", text: "Short", style:{ background: "green", color: "white"}},
+					{ type: "wbutton", text: "display:inline-block; position:absolute; left:380px; top:1590px; width:540px;", style:{ background: "#ffd080", color: "black"}},
+					{ type: "wbutton", text: "Shorter", style:{ background: "#700000", color: "white"}},
+				]
+			}			
+			
+			var check = {
+				type: "check",
+				width: 30,
+				height: 30
+			}
+			
+			var search = {
+				type: "search",
+				width: 300,
+				height: 40,
+				vPadding: 8,
+				hPadding: 8
+			}
+			
+			var hd = {
+				type: "hdock",
+				height: 52,
+				lefts:[check],
+				rights:[search],
+				style: {
+					background: "#a0a0a0"
+				}
+			}
+			
+			var vd1 = {
+				type: "vdock",
+				top: hd,
+				center: d3
+			}			
+
+			return vd1
+		}
+
+		function createUi08() {
+			var red = {
+				type: "dummy",
+				style: {
+					background: "#900000"
+				}
+			}
+			
+			var pane = {
+				type: "pane",
+				text: "Hello pane!",
+				kid: red
+			}			
+			
+			return pane
+		}
+
+		
+		function createUi07() {
+			
+			var label = {
+				type: "label",
+				text: "This is a label"
+			}
+			
+			var big = {
+				id: "big",
+				type: "hdock",
+				lefts: [label],
+				rights: [],
+				center: null,
+				height: 60,
+				style: {
+					background: "grey"
+				}				
+			}			
+			
+			var small = {
+				id: "small",
+				type: "path",
+				style: {
+					background: "MidnightBlue"
+				}
+			}
+			
+			var or = {
+				type: "dummy",
+				style: {
+					background: "coral"
+				}
+			}
+			
+			var many1 = {
+				id: "many1",
+				type: "many",
+				kids: [small, big]
+			}
+			
+			var vd1 = {
+				type: "vdock",
+				top: many1,
+				center: or
+			}			
+
+			return vd1
+		}		
+		
+		function createUi06() {
+			var d3 = {
+				id: "tree1",
+				type: "tree"
+			}
+
+			return d3
+		}		
+		
+		function createUi05() {
+			var d3 = {
+				id: "foo5",
+				type: "list_grid",
+				columns: [
+					{type:"image", width:"36px", clickable:true},
+					{type:"text", width:"100%"},
+					{type:"button"}
+				]
+			}
+
+			return d3
+		}
+		
+		
+		function createUi04() {
+			var d1 = {
+				type: "dummy",
+				height: 30,
+				style: {
+					background: "#e0ff50"
+				}
+			}
+			var d2 = {
+				type: "dummy",
+				height: 30,
+				style: {
+					background: "#ffe0dd"
+				}
+			}		
+			var d3 = {
+				id: "foo",
+				type: "list"
+			}	
+			var vp = {
+				type: "vpanel",
+				kids: [d1, d2]
+			}	
+			var vd1 = {
+				type: "vdock",
+				top: vp,
+				center: d3
+			}
+			return vd1		
+		}
+		function createUi02() {
+			
+			var d1 = {
+				type: "text_button",
+				text: "First button",
+				tooltip: "Good button",
+				style: {
+					background: "yellow",
+					color: "black",
+					padding:"13px",
+					borderRadius: "5px"
+				},
+				vPadding: 5,
+				hPadding: 3
+			}
+
+			var d2 = {
+				type: "text_button",
+				text: "Second button",
+				style: {
+					background: "#d0d0ff",
+					color: "black",
+					padding:"13px",
+					borderRadius: "5px"
+				},
+				vPadding: 5,
+				hPadding: 3,
+				customWidth: 200
+			}			
+			
+			var spacer = {
+				type: "dummy",
+				width: 20
+			}
+			
+			var spacer2 = {
+				type: "dummy",
+				height: 40
+			}			
+			
+			var d3 = {
+				type: "image_button",
+				image: "user.png",
+				tooltip: "Bad button",
+				style: {
+					background: "white",
+					borderRadius: "5px"
+				},
+				vPadding: 2,
+				hPadding: 3,
+				width: 48,
+				height: 48
+			}	
+			
+			var topPanel = {
+				type: "hdock",
+				lefts: [d1, d3],
+				rights: [d2, spacer],
+				center: {
+					type: "dummy",
+					style: {
+						background: "#0909a9"
+					}
+				},
+				height: 52,
+				style: {
+					background: "grey"
+				}				
+			}
+			
+			var d22 = {
+				type: "dummy",
+				height: 30,
+				style: {
+					background: "#e0ff50"
+				}
+			}	
+			
+			var vp = {
+				type: "vpanel",
+				kids: [topPanel, d22]
+			}
+			
+			var d3 = {
+				type: "page",
+				style: {
+					background: "white"
+				},
+				padding: 5,
+				kids: [
+					{ type: "dummy", height:30, style:{ background: "red"}},
+					{ type: "dummy", height:30, style:{ background: "yellow"}},
+					spacer2,
+					{ type: "dummy", height:30, style:{ background: "green"}}
+				]
+			}			
+			
+			var vd1 = {
+				type: "vdock",
+				top: vp,
+				center: d3
+			}
+			return vd1
+		}
+		
+		function createUi03() {
+			var d3 = {
+				type: "page",
+				style: {
+					background: "white"
+				},
+				padding: 5,
+				kids: [
+					{ type: "dummy", height:100, style:{ background: "red"}},
+					{ type: "dummy", height:100, style:{ background: "yellow"}},
+					{ type: "dummy", height:100, style:{ background: "green"}},
+					{ type: "dummy", height:100, style:{ background: "black"}},
+					{ type: "dummy", height:100, style:{ background: "blue"}}
+				]
+			}
+			return d3			
+		}
+		
+		function createUi01() {
+			var d1 = {
+				type: "dummy",
+				height: 30,
+				style: {
+					background: "yellow"
+				}
+			}
+			var d11 = {
+				type: "dummy",
+				height: 40,
+				style: {
+					background: "red"
+				}
+			}		
+			var d2 = {
+				type: "dummy",
+				style: {
+					background: "#90ff90"
+				}
+			}
+			
+			
+			
+			var le1 = {
+				type: "dummy",
+				style: {
+					background: "#ffff90"
+				},
+				width: 10
+			}
+			var le2 = {
+				type: "dummy",
+				style: {
+					background: "#ff90d0"
+				},
+				width: 20
+			}
+			var ri1 = {
+				type: "dummy",
+				style: {
+					background: "#90d0ff"
+				},
+				width: 10
+			}
+			var ri2 = {
+				type: "dummy",
+				style: {
+					background: "#90ff90"
+				},
+				width: 30
+			}
+			var ce = {
+				type: "dummy",
+				style: {
+					background: "white"
+				}
+			}
+			var hd = {
+				type: "hdock",
+				lefts: [le1, le2],
+				rights: [ri1, ri2],
+				center: ce,
+				height: 30
+			}
+			
+			var vp = {
+				type: "vpanel",
+				kids: [d1, hd, d11]
+			}
+			
+			var vd1 = {
+				type: "vdock",
+				top: vp,
+				center: d2
+			}
+			return vd1
+			
+		}
+	</script>
+	<script>
+		
+		function makeid(length) {
+			var text = "";
+			var possible = "ABCDE FGHIJKL MNOPQRSTUVW XYZabcd efghijklm nopqrstuvwx yz012 3456789";
+
+			for (var i = 0; i < length; i++)
+				text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+			return text.trim()
+		}
+		
+		function randomNumber() {
+			return Math.floor(Math.random() * 10000).toString()
+		}
+		
+		function makeUniqueId(state) {
+			var id = randomNumber()
+			while (id in state.items) {
+				id = randomNumber()
+			}
+		}
+		
+
+		
+		function makeRandomTree(state, forceFolder) {
+
+			state.size--
+						
+			var node = makeRandomNode(state, forceFolder)
+			state.items[node.id] = node
+			if (node.isFolder) {
+				var kidCount = Math.min(
+					state.size,
+					Math.floor(10 + Math.random() * 10)
+				)
+				
+				var i
+				for (i = 0; i < kidCount; i++) {
+					var kid = makeRandomTree(state, false)
+					node.kids.push(kid)
+				}
+			}
+			
+			return node			
+		}
+		
+		
+		
+		function makeRandomNode(state, forceFolder) {
+			var length = Math.ceil(3 + Math.random() * 50)
+			var isFolder = forceFolder || (Math.random() > 0.7 ? true : false)
+			return {
+				id: Math.floor(Math.random() * 10000).toString(),
+				text: makeid(length),
+				icon: isFolder ? "folder-s2.png" : "to-primitive-s2.png",
+				rank: isFolder ? 10 : 500,
+				isFolder: isFolder,
+				kids: []
+			}
+		}
+		
+		var onEvent = function(
+			evt, // The DOM event
+			type, // Event type
+			widget, // The widget that sent the event
+			rowId, // The row id, if the widget shows many rows
+			cellId // The column id, if the widget shows many columns
+		) {
+			console.log(type, widget.id, rowId, cellId)
+		}
+		
+		var onEventTree = function(
+			evt,
+			type,
+			widget,
+			rowId,
+			cellId
+		) {
+			console.log(type, widget.id, rowId, cellId)
+			if (type == "contextmenu") {
+				widget.mark(rowId)				
+				//widget.remove(rowId)
+				//widget.rename(rowId, "Renamed!")
+				widget.setIcon(rowId, "folder-menu.png")
+			}			
+			if (type == "click") {
+				widget.select(rowId)
+			}
+			if (type == "expand") {
+				var item = state.items[rowId]
+				widget.setChildren(rowId, item.kids)
+				
+			}
+			if (type == "collapse") {
+				widget.removeChildren(rowId)
+			}
+		}		
+		
+		var onEvent2 = function(
+			evt,
+			type,
+			widget,
+			rowId,
+			cellId
+		) {
+			console.log(type, widget.id, rowId, cellId)
+			if (type == "contextmenu") {
+				widget.setActive(rowId)				
+			}
+			if (type == "click") {
+				if (cellId == 0) {
+					var ch = widget.getChecked()
+					if (ch.checked.indexOf(rowId) == -1) {
+						widget.check(rowId)
+					} else {
+						widget.uncheck(rowId)
+					}
+				}
+				if (cellId == 2) {
+					if (rowId == 1) {
+						setActive("small")
+					} else if (rowId == 2) {
+						setActive("big")
+					}
+				}
+			}		
+		}	
+		
+		function setActive(id) {
+			console.log("setActive", id)
+			
+			var many1 = widgets7.getWidget("many1")
+			many1.setActive(id)
+			resizeTree()
+		}
+		
+		var onEvent7 = function(
+			evt,
+			type,
+			widget,
+			rowId,
+			cellId
+		) {
+			console.log(type, widget.id, rowId, cellId)
+		}			
+		
+		var onEvent10 = function(
+			evt,
+			type,
+			widget,
+			rowId,
+			cellId
+		) {
+			console.log(type, widget.id, rowId, cellId)
+			var split = widgets10.getWidget("split")
+			if (type == "click" && widget.id == "left_pane_close") {
+				split.leftVisible = false
+				resizeTree()
+			}
+			
+			if (type == "click" && widget.id == "right_pane_close") {
+				split.rightVisible = false
+				resizeTree()
+			}			
+		}
+				
+		
+		var translate = function(text) { return text }
+		
+		
+		var state = {
+			size: 200,
+			items: {}
+		}
+		var tree = makeRandomTree(state, true)
+		console.log(tree)
+		
+		var vd1 = createUi01()
+		var vd2 = createUi02()
+		var vd3 = createUi03()
+		var vd4 = createUi04()
+		var vd5 = createUi05()
+		var vd6 = createUi06()
+		var vd7 = createUi07()
+		var vd8 = createUi08()
+		var vd9 = createUi09()
+		var vd10 = createUi10()
+		
+		function mw(containerId, node, nextId) {
+			var widgets = new DraWidgets(
+				window, // browser's window
+				document, // browser's document
+				translate, // A function that translates strings to the current language
+				nextId, // An integer that would be the first widget id in this container
+				"../static/images/", // The path to image resources
+				containerId // The unique id of this DraWidgets instance
+			)
+			var parent = document.getElementById(containerId)
+			
+			var root = widgets.createWidget(
+				parent, // The DOM element that will host the widget tree
+				node // The markup for the widget tree.
+			) // Returns the id of the root widget
+			
+			widgets.resize = function(left, top, width, height) {
+				widgets.resizeWidget(root, left, top, width, height)
+			}
+			return widgets
+		}
+		
+		var widgets = mw("tree_container", vd1, 1000)
+		var widgets2 = mw("container2", vd2, 5000)
+		var widgets3 = mw("container3", vd3, 6000)
+		var widgets4 = mw("container4", vd4, 7000)
+		var widgets5 = mw("container5", vd5, 8000)
+		var widgets6 = mw("container6", vd6, 9000)
+		var widgets7 = mw("container7", vd7, 10000)
+		var widgets8 = mw("container8", vd8, 11000)
+		var widgets9 = mw("container9", vd9, 12000)
+		var widgets10 = mw("container10", vd10, 13000)
+		
+		
+		widgets10.getWidget("right_pane").setActive("yellow")
+		
+		
+		window.setTimeout(function() {
+			widgets10.getWidget("right_pane").setActive("green")
+		}, 2000)
+		
+		widgets2.onEvent = onEvent
+		widgets4.onEvent = onEvent
+		widgets6.onEvent = onEventTree
+		widgets5.onEvent = onEvent2
+		widgets7.onEvent = onEvent7
+		widgets7.getWidget("many1").setActive("small")
+		widgets8.onEvent = onEvent
+		widgets9.onEvent = onEvent
+		widgets10.onEvent = onEvent10
+		
+		var resizeTree = function() {
+			widgets.resize(20, 20, 300, 300)
+			widgets2.resize(20, 20, 460, 600)
+			widgets3.resize(20, 20, 300, 300)
+			widgets4.resize(20, 20, 300, 360)
+			widgets5.resize(20, 20, 500, 360)
+			widgets6.resize(20, 20, 300, 360)
+			widgets7.resize(20, 20, 500, 360)
+			widgets8.resize(20, 20, 300, 360)
+			widgets9.resize(20, 20, 500, 360)
+			
+			var div = document.getElementById("container10")
+			var w = window.innerWidth - 40
+			div.style.width = w + "px"
+			
+			widgets10.resize(20, 20, w - 40, 360)
+		}
+		
+		var li4 = widgets4.getWidget("foo")
+		li4.setItems([
+			{id: "1", text: "hello"},
+			{id: "2", text: "good-bye"},
+			{id: "3", text: "what is this?"},
+			{id: "4", text: "what kind of hell is this anyway? This is a long line of text"},
+			{id: "5", text: "number five"},
+			{id: "6", text: "xex"},
+			{id: "7", text: "hello"},
+			{id: "8", text: "good-bye"},
+			{id: "9", text: "what is this?"},
+			{id: "10", text: "bara bara"},
+			{id: "11", text: "bara bara!"}
+		])
+		
+		li4.setItemText("7", "MegaHello")
+		li4.remove("10")
+		
+		var li5 = widgets5.getWidget("foo5")
+		li5.setItems([
+			{id: "1", cells:[{src:"folder-s2.png", width:30, height:30, paddingLeft:"4px", paddingRight:"4px"}, {text: "good-bye"}, {text: "Press me"}]},
+			{id: "2", cells:[{src:"folder-s2.png", width:30, height:30, paddingLeft:"4px", paddingRight:"4px"}, {text: "Hello"}, {text: "Press me"}]},
+			{id: "3", cells:[{src:"folder-s2.png", width:30, height:30, paddingLeft:"4px", paddingRight:"4px"}, {text: "what is this?"}, {text: "Press me"}]},
+			{id: "4", cells:[{src:"to-primitive-s2.png", width:30, height:30, paddingLeft:"4px", paddingRight:"4px"}, {text: "what kind of hell is this anyway? This is a long line of text"}, {text: "Press me"}]},
+			{id: "5", cells:[{src:"to-primitive-s2.png", width:30, height:30, paddingLeft:"4px", paddingRight:"4px"}, {text: "number five"}, {text: "Press me"}]},
+			{id: "6", cells:[{src:"to-primitive-s2.png", width:30, height:30, paddingLeft:"4px", paddingRight:"4px"}, {text: "what is this?"}, {text: "Press me"}]}
+		])
+		
+		var tree1 = widgets6.getWidget("tree1")
+		tree1.setChildren(null, tree.kids)
+		
+		var path = widgets7.getWidget("small")
+		path.addStage("Root", "roo", true)
+		path.addStage("First level", "lvl1", true)
+		path.addStage("Second level", "lvl2", true)
+		path.addStage("Final cool level", "lvl3", false)
+		
+		window.onresize = resizeTree
+		
+
+		resizeTree()
+	</script>
+</body>
+</html>

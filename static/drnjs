@@ -1,0 +1,5 @@
+#!/usr/bin/tclsh
+
+exec ~/drakon_editor/drakon_gen.tcl -folder . -ext js
+exec ./pack.tcl
+

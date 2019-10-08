@@ -1,0 +1,46 @@
+.loading_back {
+	background-color: white;
+	position: absolute;
+    left: 0px;
+    top: 0px;	
+    height: 100%;
+    width: 100%;	
+}
+.loading_text {
+	text-align: center;
+	position: absolute;
+	top: 50%;
+	margin-top: -50px;
+	width: 100%;
+}
+.wait_back {
+	background-color: white;
+	position: absolute;
+    left: 0px;
+    top: 0px;	
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    display: none;
+}
+
+.grumble_back {
+	background-color: white;
+	position: absolute;
+    left: 0px;
+    top: 0px;	
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+.white_fill {
+    background-color: white;
+    position: absolute;
+    left: 0px;
+    top: 0px;	
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+

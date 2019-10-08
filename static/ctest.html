@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>title</title>
+	<style>
+	body { padding:0px; margin:0px; }
+	</style>
+  </head>
+  <body>
+	<canvas id="canvas" />
+	<script>
+
+var globals = {
+	ox: 10,
+	oy: 10,
+	down: false,
+	message: "С Новым Годом!"
+}
+
+function fillCanvas() {
+	var w = window.innerWidth
+	var h = window.innerHeight
+	var canvas = document.getElementById("canvas")
+	canvas.width = w
+	canvas.height = h
+	canvas.style.width = w + "px"
+	canvas.style.height = h + "px"
+	
+	redraw()
+}
+
+function redraw() {
+	var canvas = document.getElementById("canvas")
+	var ctx = canvas.getContext("2d")
+	var w = window.innerWidth
+	var h = window.innerHeight
+	ctx.fillStyle = "#d0ffff"
+	ctx.fillRect(0, 0, w, h)
+	
+	ctx.font = "14pt Arial"
+	globals.textWidth = ctx.measureText(globals.message).width
+	
+	for (var x = globals.ox; x < w; x += 200) {
+		for (var y = globals.oy; y < h; y += 100) {
+			drawBox(ctx, globals.message, x, y)
+		}
+	}
+}
+
+function onDown(e) {
+	globals.down = true
+	globals.mx = e.clientX
+	globals.my = e.clientY
+}
+
+function onMove(e) {
+	if (globals.down) {
+		var dx = e.clientX - globals.mx
+		var dy = e.clientY - globals.my
+		globals.ox += dx
+		globals.oy += dy
+		globals.mx = e.clientX
+		globals.my = e.clientY
+		redraw()
+	}
+}
+
+function onUp(e) {
+	globals.down = false
+}
+
+function drawBox(ctx, text, x, y) {
+	ctx.fillStyle = "white"
+	var w = globals.textWidth + 20
+	var h = 20 + 20
+	ctx.fillRect(x, y, w, h)
+	ctx.strokeStyle = "black"
+	ctx.strokeRect(x + 0.5, y + 0.5, w, h)
+	ctx.fillStyle = "black"
+	ctx.fillText(globals.message, x + 10, y + 25)
+}
+
+function init() {
+	var canvas = document.getElementById("canvas")
+	canvas.onmousedown = onDown
+	canvas.onmouseup = onUp
+	canvas.onmousemove = onMove
+	
+	window.onload = function() {
+		fillCanvas()
+	}
+
+	window.onresize = fillCanvas
+}
+
+init()
+
+	
+	
+	</script>
+  </body>
+</html>

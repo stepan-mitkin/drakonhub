@@ -1,0 +1,65 @@
+{
+	"name": "Crab",
+	"records": [
+		{
+			"name": "wheel",
+			"type": "class",
+			"fields": [
+				{"name": "diameter"},
+				{"name": "width"},
+				{"name": "spikes", "value": false}
+			]
+		},
+		{
+			"name": "cool bicycle",
+			"type": "class",
+			"fields": [
+				{"name": "ticker", "type": "string"},
+				{"name": "front wheel", "type": "wheel", "value": "new"},
+				{"name": "back wheel", "type": "wheel"}
+			]
+		},
+		{
+			"name": "vehicle",
+			"type": "map",
+			"autopk": false,
+			"fields": [
+				{"name": "id", "pk": true},
+				{"name": "vin", "unique": true},
+				{"name": "model"},
+				{"name": "left front wheel", "type": "wheel", "value": "new"},
+				{"name": "left back wheel", "type": "wheel"}
+			]
+		},
+		{
+			"name": "motorcycle",
+			"type": "class",
+			"base": "vehicle",
+			"fields": [
+				{"name": "maker"}
+			]
+		},
+		{
+			"name": "widget",
+			"type": "map",
+			"autopk": true,
+			"fields": [
+				{"name": "id", "pk": true},
+				{"name": "name", "unique": true},
+				{"name": "bar", "type": "string", "value": "bar"}
+			]
+		},
+		{
+			"name": "eod",
+			"type": "array",
+			"fields": [
+				{"name": "date", "unique": true},
+				{"name": "high"},
+				{"name": "low"},
+				{"name": "open"},
+				{"name": "last"},
+				{"name": "volume"}
+			]
+		}
+	]
+}

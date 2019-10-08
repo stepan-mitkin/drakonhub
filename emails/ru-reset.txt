@@ -1,0 +1,10 @@
+Смена пароля
+
+Вы запросили смену пароля для DrakonHub.
+Имя пользователя: USER_NAME
+Новый пароль: USER_PASSWORD
+
+С уважением,
+
+Команда DrakonHub
+https://drakonhub.com/

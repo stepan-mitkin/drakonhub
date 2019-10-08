@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+<link rel="shortcut icon" href="/static/favicon.ico" />
+<link rel="icon" type="image/png" href="/static/favicon.png" />
+<title>DRAKON Editor - Administration</title>
+
+<link rel="stylesheet" type="text/css" href="/static/reset.css"></link>
+<link rel="stylesheet" type="text/css" href="/static/loading.css"></link>
+<link rel="stylesheet" type="text/css" href="/static/common.css"></link>
+<script src="/static/HtmlUtils.js"></script>
+<script>
+</script>
+
+<style>
+h2 {
+	margin: 10px;
+	margin-top: 30px;
+	font-size: 120%;
+	font-weight: bold;
+}
+
+.op {
+	margin: 10px;
+	margin-top: 30px;
+	font-weight: bold;
+	text-align: left;
+}
+
+table.stats {
+    border-collapse: collapse;
+    margin:5px;
+}
+
+table.stats, table.stats th, table.stats td {
+    border: 1px solid black;
+}
+table.stats, table.stats th, table.stats td {
+    padding:5px;
+}
+table.stats th {
+    font-weight: bold;
+}
+
+table.stats p {
+    white-space: nowrap;
+}
+
+
+</style>
+
+</head>
+
+<body>
+<div style="margin:20px;"><a href="/">Home</a></div>
+<h1>Administration</h1>
+
+<div id="status"></div>
+
+<h2>Statistics</h2>
+
+
+
+<p id="result">Working...</p>
+
+
+<h2>Reset password</h2>
+
+<table class="form_table" style="width:100%;">
+	<tr>
+		<td style="width:90px">
+			<label for="userName">User name</label>
+		</td>
+		<td>
+			<input id="userName" type="text" style="width:190px"/>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="password">Password</label></td>
+		<td><input id="password" type="text" style="width:190px"/></td>
+	</tr>
+</table>
+<div id="logon_butt" class="button" style="margin-left:5px;" onclick="resetPassword()">Reset password</div>
+
+<h2>Roles</h2>
+
+
+			<div class="op">Read</div>
+			<table class="form_table" style="width:100%;">
+				<tr>
+					<td style="width:90px">
+						<label for="workspaceRead">Workspace</label>
+					</td>
+					<td>
+						<input id="workspaceRead" type="text" style="width:190px"/>
+					</td>
+				</tr>
+				<tr>
+					<td style="width:90px">
+						<label for="userNameRead">User name</label>
+					</td>
+					<td>
+						<input id="userNameRead" type="text" style="width:190px"/>
+					</td>
+				</tr>
+			</table>
+			<div class="button" style="margin-left:5px;" onclick="grantRead()">Grant</div>
+			<div class="button" style="margin-left:5px;" onclick="revokeRead()">Revoke</div>
+
+			<div class="op">Write</div>
+			<table class="form_table" style="width:100%;">
+				<tr>
+					<td style="width:90px">
+						<label for="workspaceWrite">Workspace</label>
+					</td>
+					<td>
+						<input id="workspaceWrite" type="text" style="width:190px"/>
+					</td>
+				</tr>
+				<tr>
+					<td style="width:90px">
+						<label for="userNameWrite">User name</label>
+					</td>
+					<td>
+						<input id="userNameWrite" type="text" style="width:190px"/>
+					</td>
+				</tr>
+			</table>
+			<div class="button" style="margin-left:5px;" onclick="grantWrite()">Grant</div>
+			<div class="button" style="margin-left:5px;" onclick="revokeWrite()">Revoke</div>
+
+			<div class="op">Own</div>
+			<table class="form_table" style="width:100%;">
+				<tr>
+					<td style="width:90px">
+						<label for="workspaceOwn">Workspace</label>
+					</td>
+					<td>
+						<input id="workspaceOwn" type="text" style="width:190px"/>
+					</td>
+				</tr>
+				<tr>
+					<td style="width:90px">
+						<label for="userNameOwn">User name</label>
+					</td>
+					<td>
+						<input id="userNameOwn" type="text" style="width:190px"/>
+					</td>
+				</tr>
+			</table>
+			<div class="button" style="margin-left:5px;" onclick="grantOwn()">Grant</div>
+			<div class="button" style="margin-left:5px;" onclick="revokeOwn()">Revoke</div>
+
+
+
+
+<div id="message" style="margin:10px"></div>
+
+<div style="height:40px;"></div>
+<div id="stats"></div>
+
+<script src="/static/Utils.js"></script>
+
+<script>
+
+function resetPassword() {
+	var name = getValue("userName").trim().toLowerCase();
+	var pass = getValue("password");
+	if (!name) {
+		HtmlUtils.setText("message", "User name is empty");
+		return;
+	}
+	if (!pass) {
+		HtmlUtils.setText("message", "Password is empty");
+		return;
+	}
+	var data = {
+		user: name,
+		password: pass
+	};
+	HtmlUtils.setText("message", "Working...");
+	HtmlUtils.sendPost("/api/adm/reset", data, onReset, onError);
+}
+
+function onReset() {
+	HtmlUtils.setText("message", "Password has been reset");
+}
+
+function onError(data) {
+	var message;
+	if (data.error) {
+		message = data.error;
+	} else {
+		message = data.toString();
+	}
+	HtmlUtils.setText("message", "Error: " + message);
+}
+
+function getValue(id) {
+	var element = document.getElementById(id)
+	return element.value || "";
+}
+
+function make(parent, tag) {
+    // item 2754
+    var element = document.createElement(tag)
+    parent.appendChild(element)
+    // item 2755
+    return element
+}
+
+function get(id) {
+    // item 3085
+    var element = document.getElementById(id)
+    // item 3082
+    if (element) {
+        // item 3086
+        return element
+    } else {
+        // item 3087
+        throw Error("Element '" + id + "' not found")
+    }
+}
+
+
+
+function getHeaders(summaries) {
+	var headers = ["date"]
+	var add = function(key, value) {
+		if (headers.indexOf(key) == -1) {
+			headers.push(key)
+		}
+	}
+	for (var r = 0; r < summaries.length; r++) {
+		var summary = summaries[r]
+		props(summary.data.snapshot, add)
+		props(summary.data.events, add)
+	}
+	return headers	
+}
+
+function props(object, visitor) {
+	for (var property in object) {
+		if (object.hasOwnProperty(property)) {
+			visitor(property, object[property])
+		}
+	}
+}
+
+
+function st(div, text) {
+	HtmlUtils.setDivText(div, text)
+}
+
+function getSummaryText(summary, header) {
+	var value
+	value = summary.data.events[header]
+	if (value != undefined) {
+		return value.toString()
+	}
+	value = summary.data.snapshot[header]
+	if (value != undefined) {
+		return value.toString()
+	}
+	return ""
+}
+
+function addTd(tr, text) {
+	var td = make(tr, "td")
+	var p = make(td, "p")
+	st(p, text)
+}
+
+function addRow(headers, tr, summary) {
+	addTd(tr, summary.date)
+	for (var i = 1; i < headers.length; i++) {
+		var header = headers[i]
+		var text = getSummaryText(summary, header)
+		addTd(tr, text)
+	}
+}
+
+function takeLast(array, count) {
+	count = Math.min(array.length, count)
+	return array.slice(array.length - count)
+}
+
+function makeStatusTable(data) {
+	var status = get("status")
+	
+	var h2 = make(status, "h2")
+	st(h2, "System status")
+	
+	
+	var table = make(status, "table")
+	table.className = "stats"
+	
+	var slab = data.slab
+	var keys = Object.keys(slab)
+	keys.sort()
+	for (var i = 0; i < keys.length; i++) {
+		var key = keys[i]
+		var value = slab[key]
+		var tr = make(table, "tr")
+		var td1 = make(tr, "td")
+		st(td1, key)
+		var td2 = make(tr, "td")
+		st(td2, value)		
+	}
+	
+	var pre = make(status, "pre")
+	pre.style.padding = "10px"
+	pre.style.fontFamily = '"Lucida Console", Monaco, monospace'
+	st(pre, data.disk)
+}
+
+function onStatsReceived(data) {
+	HtmlUtils.setText("result", "Stats received");
+	console.log("Number of stats records: " + data.summaries.length)
+	
+	makeStatusTable(data.status)
+	
+	var stats = get("stats")
+	
+	var h2 = make(stats, "h2")
+	st(h2, "Summary")
+
+	var table = make(stats, "table")
+	table.className = "stats"
+	var headers = getHeaders(data.summaries)
+	var hrow = make(table, "tr")
+	for (var i = 0; i < headers.length; i++) {
+		var th = make(hrow, "th")
+		HtmlUtils.setDivText(th, headers[i])
+	}
+	
+	var statsData = takeLast(data.summaries, 90)
+	for (var i = 0; i < statsData.length; i++) {
+		var tr = make(table, "tr")
+		var summary = statsData[i]
+		addRow(headers, tr, summary)
+	}	
+	
+	var h2 = make(stats, "h2")
+	st(h2, "Referrers")
+	var reftab = make(stats, "table")
+	reftab.className = "stats"
+	var tr = make(reftab, "tr")
+	var th1 = make(tr, "th")
+	st(th1, "date")
+	var th2 = make(tr, "th")
+	st(th2, "referrer")	
+	var th3 = make(tr, "th")
+	st(th3, "count")		
+	var first = new Date(2016, 9, 20)
+	var refData = takeLast(data.summaries, 30)
+	for (var i = 0; i < refData.length; i++) {
+		var summary = refData[i]
+		var date = Utils.parseYyyyMmDd(summary.date)
+		if (date >= first) {
+			addRef(reftab, summary)
+		}
+	}
+}
+
+
+function addComplete(table, summary) {
+	if (summary.data.completes) {
+		for (var i in summary.data.completes) {
+			var complete = summary.data.completes[i]
+			var trace = complete.trace || {}
+			var tr = make(table, "tr")
+			addTd(tr, summary.date)
+			addTd(tr, complete.total)
+			addTd(tr, complete.currency)
+			addTd(tr, trace.ref)
+			addTd(tr, trace.path)
+			addTd(tr, trace.reg)
+			addTd(tr, trace.buy)
+			addTd(tr, complete.language)
+		}
+	}
+}
+
+function addPay(table, summary) {
+	var payments = summary.data.payments
+	if (payments) {
+		var paypal = payments.payment_completed || payments.payment
+		if (paypal) {
+			var tr = make(table, "tr")
+			addTd(tr, summary.date)
+			addTd(tr, paypal.EUR)
+			addTd(tr, paypal.count)
+		}
+	}
+}
+
+function addRef(table, summary) {
+	var refs = summary.data.refs
+	
+	var add = function(ref, count) {
+		var tr = make(table, "tr")
+		addTd(tr, summary.date)
+		addTd(tr, ref)
+		addTd(tr, count.toString())			
+	}
+	
+	props(refs, add)
+}
+
+function onStatsError(data) {
+	var message;
+	if (data.error) {
+		message = data.error;
+	} else {
+		message = data.toString();
+	}
+	HtmlUtils.setText("result", "Error: " + message);
+}
+
+function getGrant(userId, workId) {
+	var user = getValue(userId);
+	if (!user) {
+		HtmlUtils.setText("message", "User name is empty");
+		return null;
+	}
+
+	var workspace = getValue(workId);
+	if (!workspace) {
+		HtmlUtils.setText("message", "Workspace is empty");
+		return null;
+	}
+	return {
+		users: [user],
+		workspace: workspace
+	}
+}
+
+function grantRead() {
+	var grant = getGrant("userNameRead", "workspaceRead")
+	if (!grant) return
+	grant.operation = "read"
+	sendGrant(grant)
+}
+
+function grantWrite() {
+	var grant = getGrant("userNameWrite", "workspaceWrite")
+	if (!grant) return
+	grant.operation = "write"
+	sendGrant(grant)
+}
+
+function grantOwn() {
+	var grant = getGrant("userNameOwn", "workspaceOwn")
+	if (!grant) return
+	grant.operation = "admin"
+	sendGrant(grant)
+}
+
+
+function revokeRead() {
+	var grant = getGrant("userNameRead", "workspaceRead")
+	if (!grant) return
+	grant.operation = "read"
+	sendRevoke(grant)
+}
+
+function revokeWrite() {
+	var grant = getGrant("userNameWrite", "workspaceWrite")
+	if (!grant) return
+	grant.operation = "write"
+	sendRevoke(grant)
+}
+
+function revokeOwn() {
+	var grant = getGrant("userNameOwn", "workspaceOwn")
+	if (!grant) return
+	grant.operation = "admin"
+	sendRevoke(grant)
+}
+
+function errorToString(data) {
+	if (data.error) return data.error
+	return data.toString()
+}
+
+function sendGrant(grant) {
+	function success() {
+		HtmlUtils.setText("message", "Granted");
+	}
+	function error(data) {
+		console.error(data)
+		HtmlUtils.setText("message", "Granting failed: " + errorToString(data));
+	}
+	HtmlUtils.setText("message", "Granting...");
+	HtmlUtils.sendRequest("POST", "/api/access", grant, success, error);
+}
+
+function sendRevoke(grant) {
+	function success() {
+		HtmlUtils.setText("message", "Revoked");
+	}
+	function error(data) {
+		console.error(data)
+		HtmlUtils.setText("message", "Revocation failed: " + errorToString(data));
+	}
+	HtmlUtils.setText("message", "Revoking...");
+	HtmlUtils.sendRequest("DELETE", "/api/access", grant, success, error);
+}
+
+
+function productChanged() {
+	var product = getValue("product").trim()
+	if (product == "team") {
+		get("maxUsers").value = 5
+		get("maxUsers").disabled = false
+	} else {
+		get("maxUsers").value = 1
+		get("maxUsers").disabled = true
+	}
+}
+
+function couponsReceived(data) {
+	var div = get("coupons")
+	div.innerHTML = ""
+	var i
+	for (i = 0; i < data.coupons.length; i++) {
+		var code = data.coupons[i]
+		var line = make(div, "div")
+		st(line, code)
+		line.style.margin = "5px"
+	}
+}
+
+function couponsError() {
+	var div = get("coupons")
+	div.innerHTML = ""
+	st(div, "Error occured")
+}
+
+function generateCoupons() {
+	var coupons = get("coupons")
+	var num = getValue("numCoupons")
+	var product = getValue("product").trim()
+	var maxUsers = getValue("maxUsers")
+	if (!num || num < 1) {
+		st(coupons, "Number of coupons should be greater than zero.")
+		return
+	}
+	
+	if (num > 10) {
+		st(coupons, "Max number of coupons is 10.")
+		return		
+	}
+	
+	if (!maxUsers || maxUsers < 1) {
+		st(coupons, "Max users should be greater than zero.")
+		return
+	}
+	
+	if (maxUsers > 1000) {
+		st(coupons, "Max number of users is 1000.")
+		return		
+	}	
+	
+	var tag = getValue("tagCoupons").trim()
+	if (!tag) {
+		st(coupons, "Tag is empty")
+		return
+	}
+	
+	if (!product) {
+		st(coupons, "Product is empty")
+		return		
+	}	
+	
+	var data = {
+		tag: tag,
+		product_id: product,
+		count: parseInt(num),
+		max_users: parseInt(maxUsers)
+	}
+	
+	HtmlUtils.sendPost("/api/gen_coupons", data, couponsReceived, couponsError)
+}
+
+HtmlUtils.sendGet("/api/summary", onStatsReceived, onStatsError);
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+User-agent: *
+Disallow: /try-me
+Disallow: /api/
+Disallow: /ide/
+Disallow: /account
+Disallow: /buy
+Disallow: /welcome
+Disallow: /welcome-trial
+Disallow: /welcome-signup-trial
+Disallow: /trial
+Disallow: /signup-trial
+Host: drakonhub.com
+

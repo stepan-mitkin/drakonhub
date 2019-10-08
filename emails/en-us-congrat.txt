@@ -1,0 +1,29 @@
+Purchase completed
+
+Congratulations!
+Your purchase has completed successfully.
+Thank you for choosing DrakonHub. 	*
+
+MES_ORDER_ID: VALUE_ORDER_ID
+MES_ORDER_DATE: VALUE_DATE
+Transaction status: completed
+MES_PRODUCT_NAME: VALUE_PRODUCT_NAME
+MES_MAX_DIAGRAMS: VALUE_MAX_DIAGRAMS
+MES_MAX_SPACES: VALUE_MAX_SPACES
+MES_PRICE_PER_USER: VALUE_PRICE_PER_USER
+MES_NUM_USERS: VALUE_NUM_USERS
+MES_MVA: VALUE_MVA
+MES_TOTAL: VALUE_TOTAL
+
+Customer support: drakon.editor@gmail.com
+
+Regards
+
+DrakonHub team
+https://drakonhub.com/
+
+DRAKON Labs Stepan Mitkin
+Reg. no. 915 415 431
+Løkentoppen 21, Kolsås 1352, Norway
+
+

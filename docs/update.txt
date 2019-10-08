@@ -1,0 +1,10 @@
+https://www.debian.org/doc/manuals/debian-faq/ch-uptodate.en.html
+
+apt-get update
+apt-get dist-upgrade
+
+(debian-goodies)
+checkrestart
+
+reboot
+
