@@ -5014,15 +5014,18 @@ function save_report(path, report, email)
             text = text .. stepj .. "\n"
         end
     end
-    -- item 1489
-    send_mail(
-    	"system",
-    	global_cfg.feedback_email,
-    	subject,
-    	text,
-    	nil,
-    	path
-    )
+    -- item 4997
+    if (report.type == "feedback") or (global_cfg.email_on_crash) then
+        -- item 1489
+        send_mail(
+        	"system",
+        	global_cfg.feedback_email,
+        	subject,
+        	text,
+        	nil,
+        	path
+        )
+    end
 end
 
 function send_autopay_email(user_id, receipt, language, success)
