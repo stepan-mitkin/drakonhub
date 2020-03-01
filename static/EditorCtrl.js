@@ -3378,6 +3378,8 @@ function makeErrorMessage(data) {
 function makeFamilies(family) {
     // item 2051
     var families = [
+    {text: "PT Mono",	value: "PT Mono"},
+    {text: "Fira Code",	value: "Fira Code"},
     {text: "Courier (Cousine)",	value: "Cousine"},
     {text: "Times (Tinos)",	value: "Tinos"},
     {text:"Alegreya Sans", value:"Alegreya Sans"},
@@ -5840,6 +5842,16 @@ function ManyFontLoader() {
   };
 }
 
+
+addFontFile(false, false, "PT Mono", "PTM55FT.ttf")
+addFontFile(false, true, "PT Mono", "PTM55FT.ttf")
+addFontFile(true, false, "PT Mono", "PTM55FT.ttf")
+addFontFile(true, true, "PT Mono", "PTM55FT.ttf")
+
+addFontFile(false, false, "Fira Code", "FiraCode-Regular.otf")
+addFontFile(false, true, "Fira Code", "FiraCode-Regular.otf")
+addFontFile(true, false, "Fira Code", "FiraCode-Regular.otf")
+addFontFile(true, true, "Fira Code", "FiraCode-Regular.otf")
 
 addFontFile(false, false, "Liberation Sans", "LiberationSans.ttf")
 addFontFile(false, true, "Liberation Sans", "LiberationSans-Bold.ttf")

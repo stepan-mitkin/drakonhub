@@ -43,9 +43,12 @@ local price_cfg = price_cfg
 local external_creds = external_creds
 
 local http = require("http.server")
+local http_client = require('http.client').new({max_connections = 5})
+
+local http_router = require('http.router')
 
 local httpd = nil
-
+local router = nil
 
 local greq = nil
 
@@ -115,7 +118,7 @@ function api_access(req, session, headers)
     -- item 923
     local data = req:json()
     -- item 925
-    local grant = (req.method == "POST")
+    local grant = (req:method() == "POST")
     -- item 916
     local msg = space.access(
     	data,
@@ -919,7 +922,7 @@ function api_feedback(req, session, headers)
         add_diagram(data)
     end
     -- item 4096
-    data.user_agent = req.headers["user-agent"]
+    data.user_agent = req:header("user-agent")
     -- item 1480
     save_report(path, data, session.email)
     -- item 994
@@ -1488,7 +1491,7 @@ end
 function api_handler_kernel(req)
     -- item 753
     local api_method = req:stash("method")
-    local method = req.method
+    local method = req:method()
     -- item 755
     local headers = {}
     -- item 756
@@ -2895,7 +2898,7 @@ end
 
 function choose_language(req, session, url_language)
     -- item 1520
-    local acc_lang = req.headers["accept-language"]
+    local acc_lang = req:header("accept-language")
     local chosen = req:cookie("language")
     -- item 1521
     local language = find_language(
@@ -3821,13 +3824,13 @@ end
 
 function get_client_ip(req)
     -- item 3027
-    local ip = req.headers["x-real-ip"]
+    local ip = req:header("x-real-ip")
     -- item 3696
     if ip then
         
     else
         -- item 3701
-        ip = req.peer.host
+        ip = req:peer().host
     end
     -- item 3028
     return ip
@@ -4145,8 +4148,8 @@ function handle_cookie(req, headers)
     -- item 3029
     local ip = get_client_ip(req)
     -- item 529
-    local referer = req.headers.referer
-    local path = req.path
+    local referer = req:header("referer")
+    local path = req:path()
     -- item 39
     local session_id = req:cookie("session_id")
     local session = vud.get_create_session(
@@ -4185,7 +4188,7 @@ function handle_template(req, page, url_language, caching_allowed, cinfo_maker)
     -- item 4465
     local session = handle_cookie(req, headers)
     -- item 4483
-    local referer = req.headers.referer or ""
+    local referer = req:header("referer") or ""
     -- item 4472
     local language = choose_language(
     	req,
@@ -4225,7 +4228,7 @@ function handle_template(req, page, url_language, caching_allowed, cinfo_maker)
         	admin = session.admin or false,
         	debug = session.debug,
         	url_language = url_language,
-        	try_me = (req.path == "/try-me"),
+        	try_me = (req:path() == "/try-me"),
         	build_id = global_cfg.build_id,
         	use_capture = global_cfg.use_capture,
         	include = include,
@@ -4344,17 +4347,17 @@ function land_route(path)
     -- item 4835
     local cinfo_maker = create_land_cinfo
     -- item 4829
-    httpd:route(
+    router:route(
     	{path=path_ru, file=file},
     	make_template("index", "ru", caching_allowed, cinfo_maker)
     )
     -- item 4831
-    httpd:route(
+    router:route(
     	{path=path_en, file=file},
     	make_template("index", "en", caching_allowed, cinfo_maker)
     )
     -- item 4834
-    httpd:route(
+    router:route(
     	{path=root_path, file=file},
     	make_template("index", "", caching_allowed, cinfo_maker)
     )
@@ -4407,11 +4410,11 @@ end
 
 function log_page_request(req, session, language)
     -- item 1643
-    if req.path == "/try-me" then
+    if req:path() == "/try-me" then
         -- item 1647
         ej.info(
         	"try-me",
-        	{path=req.path,
+        	{path=req:path(),
         	session_id=session.session_id,
         	language=language}
         )
@@ -4916,7 +4919,7 @@ function redirect(from, to)
     	return redirect_handler(to)
     end
     -- item 4811
-    httpd:route({ path = from }, handler)
+    router:route({ path = from }, handler)
 end
 
 function redirect_handler(location)
@@ -4971,7 +4974,7 @@ end
 
 function route(path, handler)
     -- item 399
-    httpd:route({ path = path }, handler)
+    router:route({ path = path }, handler)
 end
 
 function save_report(path, report, email)
@@ -5362,7 +5365,7 @@ end
 
 function serve_file(req, headers, filename)
     -- item 587
-    local method = req.method
+    local method = req:method()
     -- item 583
     if method == "GET" then
         -- item 588
@@ -5441,22 +5444,28 @@ function set_session_cookie(headers, session_id)
 end
 
 function start()
-    -- item 4995
+    -- item 5005
     local options = {
-    	charset = "utf8",
     	log_errors = true
     }
-    -- item 4996
+    -- item 5006
     utils.add_set(
     	global_cfg.http_options,
     	options
     )
-    -- item 4
+    -- item 5004
     httpd = http.new(
     	global_cfg.host,
     	global_cfg.port,
     	options
     )
+    -- item 5008
+    local roptions = {
+    	charset = "utf8"
+    }
+    -- item 5007
+    router = http_router.new(roptions)
+    httpd:set_router(router)
     -- item 266
     route("/static/:filename", static_handler)
     route("/static/fonts/:filename", static_handler)
@@ -5673,7 +5682,7 @@ end
 
 function static_handler(req)
     -- item 4873
-    local parts = utils.split(req.path, "/")
+    local parts = utils.split(req:path(), "/")
     local filename
     -- item 4874
     if #parts == 3 then
@@ -5751,17 +5760,17 @@ function temp_content_route(path)
     	return create_content_cinfo(language, path)
     end
     -- item 4424
-    httpd:route(
+    router:route(
     	{path=path_ru, file=file},
     	make_template("index", "ru", caching_allowed, cinfo_maker)
     )
     -- item 4426
-    httpd:route(
+    router:route(
     	{path=path_en, file=file},
     	make_template("index", "en", caching_allowed, cinfo_maker)
     )
     -- item 4434
-    httpd:route(
+    router:route(
     	{path=root_path, file=file},
     	make_template("index", "", caching_allowed, cinfo_maker)
     )
@@ -5778,17 +5787,17 @@ function temp_land_route(path, file)
     	return create_content_cinfo(language, path)
     end
     -- item 4451
-    httpd:route(
+    router:route(
     	{path=path_ru, file=file},
     	make_template("index", "ru", caching_allowed, cinfo_maker)
     )
     -- item 4453
-    httpd:route(
+    router:route(
     	{path=path_en, file=file},
     	make_template("index", "en", caching_allowed, cinfo_maker)
     )
     -- item 4456
-    httpd:route(
+    router:route(
     	{path=path, file=file},
     	make_template("index", "", caching_allowed, cinfo_maker)
     )
@@ -5805,17 +5814,17 @@ function temp_read_route(path)
     -- item 4586
     local cinfo_maker = create_read_cinfo
     -- item 4580
-    httpd:route(
+    router:route(
     	{path=path_ru, file=file},
     	make_template("index", "ru", caching_allowed, cinfo_maker)
     )
     -- item 4582
-    httpd:route(
+    router:route(
     	{path=path_en, file=file},
     	make_template("index", "en", caching_allowed, cinfo_maker)
     )
     -- item 4585
-    httpd:route(
+    router:route(
     	{path=root_path, file=file},
     	make_template("index", "", caching_allowed, cinfo_maker)
     )
@@ -5823,7 +5832,7 @@ end
 
 function temp_route(path, file, caching_allowed)
     -- item 1199
-    httpd:route(
+    router:route(
     	{path=path, file=file},
     	make_template("index", "", caching_allowed, nil)
     )
@@ -5834,12 +5843,12 @@ function temp_route_local(path, file, caching_allowed)
     local path_ru = "/ru" .. path
     local path_en = "/en" .. path
     -- item 4428
-    httpd:route(
+    router:route(
     	{path=path_ru, file=file},
     	make_template("index", "ru", caching_allowed, nil)
     )
     -- item 4430
-    httpd:route(
+    router:route(
     	{path=path_en, file=file},
     	make_template("index", "en", caching_allowed, nil)
     )
