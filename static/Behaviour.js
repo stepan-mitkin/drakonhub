@@ -710,7 +710,7 @@ function SubdiagramLinker(link) {
     this.mouseMove = function() {}
     this.mouseUp = function(evt) {
     	evt.handled = true
-    	console.log("Open subdiagram", link)
+    	callbacks.openSub(link)
     }
 }
 
