@@ -80,5 +80,6 @@ var Const = {
 	LINE_START: "LINE_START",
 	LINE_END: "LINE_END",
 	DRN_MOVE_ALL: "DRN_MOVE_ALL",
-	LINK: "LINK"
+	LINK: "LINK",
+	SUB: "SUB"
 };
