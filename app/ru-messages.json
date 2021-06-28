@@ -406,5 +406,6 @@
 	"MES_FORMAT_ICON": "Формат икон",
 	"MES_BUILD_LADDER": "Построить диаграмму \"лестница\"",
 	"MES_BUILD_MIXED": "Построить смешанную диаграмму",
-	"MES_FIND_REFERENCES": "Найти, где встречается"
+	"MES_FIND_REFERENCES": "Найти, где встречается",
+	"MES_DRAKONHUB_CLOSED": "DrakonHub будет навсегда отключен 1 октября 2021"
 }
