@@ -1,4 +1,11 @@
 {
+	"MES_SAVE_TO_FILE": "Save to file",
+	"MES_LOAD_FROM_FILE": "Load from file",
+	"MES_LOAD_AND_REPLACE": "Load and replace",
+	"MES_CHOOSE_FILE": "Choose file",
+	"MES_NO_FILE_CHOSEN": "No file chosen",	
+	"MES_LOAD_FROM_FILE_EX": "Load project from file",
+	"MES_SURE_LOAD_SPACE": "The whole project will be replaced. Are you sure you want to delete the project?",	
 	"ERR_ACCOUNT_DISABLED": "User account has been disabled.",
 	"ERR_ACCOUNT_TEMP_DISABLED": "Please wait a few seconds before trying again.",
 	"ERR_EMAIL_EMPTY": "Email is empty",

@@ -1335,6 +1335,129 @@ function ProjectDeleter_Waiting_timeout(self, data) {
     self.state = "Sure2";
 }
 
+function ProjectLoader_ChoosingFile_cancel(self, data) {
+    browser.hideCentral()
+    complete(self, data)
+    self.state = null;
+}
+
+function ProjectLoader_ChoosingFile_onData(self, data) {
+    browser.hideCentral()
+    self.file = data
+    var dialog = makeSureLoad(self.spaceId)
+    browser.createCentral(dialog, self)
+    self.state = "Confirm";
+}
+
+function ProjectLoader_ChoosingFile_onError(self, data) {
+    forwardError(self, data)
+    self.state = null;
+}
+
+function ProjectLoader_Confirm_cancel(self, data) {
+    browser.hideCentral()
+    complete(self, data)
+    self.state = null;
+}
+
+function ProjectLoader_Confirm_onData(self, data) {
+    browser.hideCentral()
+    browser.showWorking()
+    browser.upload(
+        "/api/restore_backup/" + self.spaceId,
+        "restore",
+        self.file,
+        self
+    )
+    self.state = "Loading";
+}
+
+function ProjectLoader_Confirm_onError(self, data) {
+    forwardError(self, data)
+    self.state = null;
+}
+
+function ProjectLoader_Loading_onData(self, data) {
+    browser.hideWorking()
+    if (data.status === 200) {
+        browser.goToUrl("/ide/doc/" + 
+        	self.spaceId + "/1")
+    } else {
+        forwardError(self, data.responseText)
+    }
+    self.state = null;
+}
+
+function ProjectLoader_Loading_onError(self, data) {
+    forwardError(self, data)
+    self.state = null;
+}
+
+function ProjectLoader_Start_onData(self, data) {
+    self.spaceId = data
+    browser.showLoadFromFile(
+    	self.spaceId,
+    	self
+    )
+    self.state = "ChoosingFile";
+}
+
+function ProjectLoader_Start_onError(self, data) {
+    self.state = "Start";
+}
+
+function ProjectSaver_BuildingZip_onData(self, data) {
+    browser.hideWorking()
+    browser.downloadFile(
+    	data.url,
+    	data.filename
+    )
+    complete(self, data)
+    self.state = null;
+}
+
+function ProjectSaver_BuildingZip_onError(self, data) {
+    browser.hideWorking()
+    panic(data)
+    self.state = null;
+}
+
+function ProjectSaver_SaveScreen_cancel(self, data) {
+    browser.hideCentral()
+    complete(self, data)
+    self.state = null;
+}
+
+function ProjectSaver_SaveScreen_onData(self, data) {
+    var url = "/api/backup/" + self.spaceId
+    browser.hideCentral()
+    browser.showWorking()
+    browser.sendGet(
+    	url,
+    	self
+    )
+    self.state = "BuildingZip";
+}
+
+function ProjectSaver_SaveScreen_onError(self, data) {
+    forwardError(self, data)
+    self.state = null;
+}
+
+function ProjectSaver_Start_onData(self, data) {
+    self.spaceId = data
+    browser.showSaveProjectScreen(
+        self.spaceId,
+        self
+    )
+    self.state = "SaveScreen";
+}
+
+function ProjectSaver_Start_onError(self, data) {
+    forwardError(self, data)
+    self.state = null;
+}
+
 function RecentGetter_GettingHistory_onData(self, data) {
     setHistory(data.recent)
     complete(self, data)
@@ -4443,6 +4566,57 @@ function makeSure2(spaceId) {
     return root
 }
 
+function makeSureLoad(spaceId) {
+    var titleLabel = {
+    	type: "wlabel",
+    	text: "MES_ATTENTION",
+    	textAlign: "center",
+    	style: {
+    		fontSize: "110%",
+    		fontWeight: "bold"
+    	}
+    }
+    var lab = {
+    	type: "wlabel",
+    	text: "MES_SURE_LOAD_SPACE",
+    	style: {
+    		fontSize: "100%",
+    		textAlign: "left"
+    	}
+    }
+    var confirm = {
+    	signalId: "sendToCentralMachine",
+    	type: "wbutton",
+    	text: "MES_LOAD_AND_REPLACE",
+    	style: {
+    		color: "white",
+    		background: "red",
+    		padding: "12px",
+    		textAlign: "center"
+    	}
+    }
+    var cancel = {
+    	signalId: "hideCentral",
+    	type: "wbutton",
+    	text: "MES_CANCEL",
+    	style: {
+    		color: "white",
+    		background: DarkBackground,
+    		padding: "12px",
+    		textAlign: "center"
+    	}
+    }
+    var root = {
+    	type: "page",
+    	style: {
+    		background: "white"
+    	},
+    	padding: 10,
+    	kids: [titleLabel, lab, confirm, cancel]
+    }
+    return root
+}
+
 function makeTarget(onData, onError) {
     return {
         onData : onData,
@@ -4849,7 +5023,7 @@ function onProjectClick(evt, type, widget, id, cellId) {
 }
 
 function onProjectContext(evt, type, widget, id, cellId) {
-    var folder, isAdmin, list, spaceId, spacesWidget
+    var folder, isAdmin, isReadonly, list, spaceId, spacesWidget
     spacesWidget = getWidget("middle_spaces")
     if (id) {
         spacesWidget.mark(id)
@@ -4860,7 +5034,25 @@ function onProjectContext(evt, type, widget, id, cellId) {
             function() {changeDescription(id)}
         )
         folder = globs.folders[id]
+        isReadonly = isReadonlyAccess(folder)
         isAdmin = (folder.access == "admin")
+        if (isReadonly) {
+            
+        } else {
+            makeSeparator(
+                list
+            )
+            makeTextListItem(
+                list,
+                "MES_LOAD_FROM_FILE",
+                function() {showLoadFromFile(spaceId)}
+            )
+            makeTextListItem(
+                list,
+                "MES_SAVE_TO_FILE",
+                function() {showSaveToFile(spaceId)}
+            )
+        }
         if (isAdmin) {
             spaceId = parseId(id).spaceId
             makeSeparator(list)
@@ -5063,6 +5255,19 @@ function onTreeContextFolder(evt, tree, id) {
                             function() {showAccessScreen(folder.spaceId, null)}
                         )
                     }
+                    makeSeparator(
+                        list
+                    )
+                    makeTextListItem(
+                        list,
+                        "MES_LOAD_FROM_FILE",
+                        function() {showLoadFromFile(folder.spaceId)}
+                    )
+                    makeTextListItem(
+                        list,
+                        "MES_SAVE_TO_FILE",
+                        function() {showSaveToFile(folder.spaceId)}
+                    )
                     makeSeparator(
                         list
                     )
@@ -6196,6 +6401,22 @@ function showHelp() {
     browser.showHelp()
 }
 
+function showLoadFromFile(spaceId, target) {
+    if (target) {
+        
+    } else {
+        target = makeTarget(
+            hideCentral,
+            panic
+        )
+    }
+    startMachine(
+        new ProjectLoader(),
+        spaceId,
+        target
+    )
+}
+
 function showMainMenu() {
     var items
     items = buildMainMenu()
@@ -6203,8 +6424,9 @@ function showMainMenu() {
 }
 
 function showProjectMenu(x, y, id) {
-    var folder, isAdmin, list, spaceId
+    var folder, isAdmin, isReadonly, list, spaceId
     folder = globs.folders[id]
+    isReadonly = isReadonlyAccess(folder)
     isAdmin = (folder.access == "admin")
     spaceId = parseId(id).spaceId
     list = []
@@ -6213,6 +6435,23 @@ function showProjectMenu(x, y, id) {
         "MES_DESCRIPTION",
         function() {changeDescription(id)}
     )
+    if (isReadonly) {
+        
+    } else {
+        makeSeparator(
+            list
+        )
+        makeTextListItem(
+            list,
+            "MES_LOAD_FROM_FILE",
+            function() {showLoadFromFile(spaceId)}
+        )
+        makeTextListItem(
+            list,
+            "MES_SAVE_TO_FILE",
+            function() {showSaveToFile(spaceId)}
+        )
+    }
     if (isAdmin) {
         makeSeparator(list)
         makeTextListItem(
@@ -6271,6 +6510,22 @@ function showRecent() {
         null
     )
     pushNavRecent()
+}
+
+function showSaveToFile(spaceId, target) {
+    if (target) {
+        
+    } else {
+        target = makeTarget(
+            hideCentral,
+            panic
+        )
+    }
+    startMachine(
+        new ProjectSaver(),
+        spaceId,
+        target
+    )
 }
 
 function showShareScreen(target) {
@@ -8271,6 +8526,93 @@ function ReferencesSearch() {
     }
     else if (_state_ == "Items") {
       return ReferencesSearch_Items_onError(_self, data);
+    }
+    return null;
+  };
+}
+
+function ProjectSaver() {
+  var _self = this;
+  _self.type_name = "ProjectSaver";
+  _self.state = "Start";
+  _self.cancel = function(data) {
+    var _state_ = _self.state;
+    if (_state_ == "SaveScreen") {
+      return ProjectSaver_SaveScreen_cancel(_self, data);
+    }
+    return null;
+  };
+  _self.onData = function(data) {
+    var _state_ = _self.state;
+    if (_state_ == "Start") {
+      return ProjectSaver_Start_onData(_self, data);
+    }
+    else if (_state_ == "SaveScreen") {
+      return ProjectSaver_SaveScreen_onData(_self, data);
+    }
+    else if (_state_ == "BuildingZip") {
+      return ProjectSaver_BuildingZip_onData(_self, data);
+    }
+    return null;
+  };
+  _self.onError = function(data) {
+    var _state_ = _self.state;
+    if (_state_ == "Start") {
+      return ProjectSaver_Start_onError(_self, data);
+    }
+    else if (_state_ == "SaveScreen") {
+      return ProjectSaver_SaveScreen_onError(_self, data);
+    }
+    else if (_state_ == "BuildingZip") {
+      return ProjectSaver_BuildingZip_onError(_self, data);
+    }
+    return null;
+  };
+}
+
+function ProjectLoader() {
+  var _self = this;
+  _self.type_name = "ProjectLoader";
+  _self.state = "Start";
+  _self.cancel = function(data) {
+    var _state_ = _self.state;
+    if (_state_ == "ChoosingFile") {
+      return ProjectLoader_ChoosingFile_cancel(_self, data);
+    }
+    else if (_state_ == "Confirm") {
+      return ProjectLoader_Confirm_cancel(_self, data);
+    }
+    return null;
+  };
+  _self.onData = function(data) {
+    var _state_ = _self.state;
+    if (_state_ == "Start") {
+      return ProjectLoader_Start_onData(_self, data);
+    }
+    else if (_state_ == "ChoosingFile") {
+      return ProjectLoader_ChoosingFile_onData(_self, data);
+    }
+    else if (_state_ == "Confirm") {
+      return ProjectLoader_Confirm_onData(_self, data);
+    }
+    else if (_state_ == "Loading") {
+      return ProjectLoader_Loading_onData(_self, data);
+    }
+    return null;
+  };
+  _self.onError = function(data) {
+    var _state_ = _self.state;
+    if (_state_ == "Start") {
+      return ProjectLoader_Start_onError(_self, data);
+    }
+    else if (_state_ == "ChoosingFile") {
+      return ProjectLoader_ChoosingFile_onError(_self, data);
+    }
+    else if (_state_ == "Confirm") {
+      return ProjectLoader_Confirm_onError(_self, data);
+    }
+    else if (_state_ == "Loading") {
+      return ProjectLoader_Loading_onError(_self, data);
     }
     return null;
   };

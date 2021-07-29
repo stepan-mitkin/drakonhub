@@ -1,4 +1,11 @@
 {
+	"MES_SAVE_TO_FILE": "Сохранить в файл",
+	"MES_LOAD_FROM_FILE": "Загрузить из файла",
+	"MES_LOAD_AND_REPLACE": "Загрузить и заменить",
+	"MES_CHOOSE_FILE": "Выберите файл",
+	"MES_NO_FILE_CHOSEN": "Файл не выбран",
+	"MES_LOAD_FROM_FILE_EX": "Загрузить проект из файла",
+	"MES_SURE_LOAD_SPACE": "Весь проект будет переписан. Вы уверены, что хотите удалить проект?",	
 	"ERR_ACCOUNT_DISABLED": "Учётная запись заблокирована",
 	"ERR_ACCOUNT_TEMP_DISABLED": "Пожалуйста, подождите несколько секунд и попробуйте ещё раз.",
 	"ERR_EMAIL_EMPTY": "Email пуст",
