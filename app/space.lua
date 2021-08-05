@@ -237,8 +237,8 @@ function backup(space_id, user_id, roles)
     if ok then
         local names = data
         backup_project(space_id, names.folder)
-        local command = "zip -r " .. names.filename ..
-        	" " .. names.folder
+        local command = "cd " .. names.folder .. "; zip -r " .. space_id ..
+        	".zip " .. space_id
         log.info(command)
         local cmd_result = os.execute(command)
         log.info(cmd_result)
