@@ -27,6 +27,7 @@ local json = require("json")
 
 local utf8 = require("lua-utf8")
 
+local fio = require("fio")
 
 local search_yield = 0.02
 local current_version = 20180619
@@ -224,6 +225,78 @@ function add_tree_node(space_id, folder_id, fdata, depth, lines)
             )
         end
     end
+end
+
+function backup(space_id, user_id, roles)
+    log.info("backup " .. space_id)
+    local ok, data = prepare_backup(
+    	space_id,
+    	user_id,
+    	roles
+    )
+    if ok then
+        local names = data
+        backup_project(space_id, names.folder)
+        local command = "zip -r " .. names.filename ..
+        	" " .. names.folder
+        log.info(command)
+        local cmd_result = os.execute(command)
+        log.info(cmd_result)
+        local down_name = space_id .. ".zip"
+        result = {
+        	filename = down_name,
+        	url = names.url
+        }
+        schedule_delete(names.folder)
+        return true, result
+    else
+        log.error("backup: " .. data)
+        return false, data
+    end
+end
+
+function backup_folder(space_id, folder_id, output)
+    local fdata = find_folder(space_id, folder_id)
+    if fdata then
+        log.info("backup folder " .. space_id
+         .. "/" .. folder_id .. " " .. fdata.name)
+        local name = unique_filename(
+        	fdata.name,
+        	output
+        )
+        fdata.updated_by = nil
+        fdata.created_by = nil
+        fdata.when_created = nil
+        fdata.when_updated = nil
+        fdata.tag = nil
+        fdata.children = {}
+        local low =  utf8.lower(name)
+        fdata.name = name
+        output[low] = fdata
+        fdata.items = get_items(space_id, folder_id)
+        local kids = get_child_folders(
+        	space_id,
+        	folder_id
+        )
+        for _, child_id in ipairs(kids) do
+            backup_folder(
+            	space_id,
+            	child_id,
+            	fdata.children
+            )
+        end
+    end
+end
+
+function backup_project(space_id, path)
+    local tmp = {}
+    local output = {}
+    backup_folder(space_id, "1", tmp)
+    for bad, folder in pairs(tmp) do
+        folder.name = space_id
+        output[space_id] = folder
+    end
+    save_folders(output, path)
 end
 
 function build_copy_plan(space_id, folder_id, plan)
@@ -1908,6 +1981,71 @@ function norm_contains(haystack, needle)
     end
 end
 
+function normalize_filename(raw)
+    local bad = {}
+    local result = ""
+    local ch
+    bad["/"] = true
+    bad["\\"] = true
+    bad["\""] = true
+    bad["\'"] = true
+    bad["?"] = true
+    bad["*"] = true
+    bad["<"] = true
+    bad[">"] = true
+    bad["|"] = true
+    bad[":"] = true
+    for i, code in utf8.next, raw do
+        if ((code == 9) or (code == 10)) or (code == 13) then
+            ch = " "
+        else
+            if code < 32 then
+                ch = "_"
+            else
+                ch = utf8.char(code)
+                if bad[ch] then
+                    ch = "_"
+                end
+            end
+        end
+        result = utf8.insert(
+        	result,
+        	ch
+        )
+    end
+    if #result == 0 then
+        return "Bad-name"
+    else
+        return result
+    end
+end
+
+function prepare_backup(space_id, user_id, roles)
+    local message = check_read_access(
+    	space_id,
+    	user_id,
+    	roles
+    )
+    if message then
+        return false, message
+    else
+        local gentoken = utils.random_password(16)
+        local path = global_cfg.files ..
+          "/" .. gentoken
+        if fio.mkdir(path) then
+            local names = {}
+            local filename = space_id .. ".zip"
+            names.url = "/files/" .. gentoken ..
+            	"/" .. filename
+            names.filename = path .. "/" .. filename
+            names.folder = path
+            return true, names
+        else
+            return false, "ERROR_COULD_NOT_CREATE_FOLDER"
+        end
+    end
+end
+
 function read_access(space_id, user_id, admin)
     local space_error, access = check_read_access(
     	space_id,
@@ -2021,6 +2159,65 @@ function restore(space_id, folder_id, user_id, admin)
     end
 end
 
+function restore_backup(space_id, body, user_id, roles)
+    ok, data = prepare_backup(
+    	space_id,
+    	user_id,
+    	roles
+    )
+    if ok then
+        names = data
+        content = extract_multipart_body(body)
+        utils.write_all_bytes(names.path, content)
+        command = "unzip " .. names.path ..
+        	" -d " .. names.tmp
+        log.info(command)
+        cmd_result = os.execute(command)
+        log.info(cmd_result)
+        if cmd_result == 0 then
+            local diagrams = load_project(
+            	names.tmp
+            )
+            if diagrams then
+                delete_recent_and_folders(
+                	space_id
+                )
+                local parents = {}
+                for folder_id, diagram in pairs(diagrams) do
+                    if diagram.parent_id then
+                        parents[folder_id] = diagram.parent_id
+                    end
+                    restore_diagram(
+                    	space_id,
+                    	folder_id,
+                    	diagram
+                    )
+                end
+                for folder_id, diagram in pairs(diagrams) do
+                    local parent_id = parents[folder_id]
+                    if utils.is_empty(parent_id) then
+                        
+                    else
+                        add_child(
+                        	space_id,
+                        	parent_id,
+                        	folder_id,
+                        	diagram.created_by
+                        )
+                    end
+                end
+                return true, {}
+            else
+                return false, "Errors in structure"
+            end
+        else
+            return false, "Could not unzip"
+        end
+    else
+        return false, data
+    end
+end
+
 function restore_recursive(space_id, folder_id)
     local fdata = db.folder_get(
     	space_id,
@@ -2041,6 +2238,38 @@ function restore_recursive(space_id, folder_id)
         	space_id,
         	child_id
         )
+    end
+end
+
+function save_diagram(diagram, path)
+    local filename = path .. "/" .. diagram.name .. ".json"
+    log.info("save diagram " .. diagram.name
+     .. " " .. filename)
+    diagram.name = nil
+    diagram.children = nil
+    utils.write_json(filename, diagram)
+end
+
+function save_folder(folder, path)
+    local full_path = path .. "/" .. folder.name
+    log.info("save folder " .. folder.name
+     .. " " .. full_path)
+    if fio.mkdir(full_path) then
+        
+    else
+        log.error("Could not create folder " .. full_path)
+    end
+end
+
+function save_folders(folders, path)
+    for low, folder in pairs(folders) do
+        if folder.type == "folder" then
+            save_folder(folder, path)
+            local cpath = path .. "/".. folder.name
+            save_folders(folder.children, cpath)
+        else
+            save_diagram(folder, path)
+        end
     end
 end
 
@@ -2107,6 +2336,18 @@ function save_try(data, user_id)
             return false, message, count
         end
     end
+end
+
+function schedule_delete(filename)
+    log.info("schedule_delete " .. filename)
+    local deleter = function()
+    	fiber.sleep(1200)
+    	local command = "rm -rf " .. filename
+    	log.info(command)
+    	local cmd_result = os.execute(command)
+    	log.info(cmd_result)
+    end
+    fiber.create(deleter)
 end
 
 function search_add(session_id, search)
@@ -2395,6 +2636,21 @@ function top_spaces()
     return txt
 end
 
+function unique_filename(raw, names)
+    local norm, low
+    norm = normalize_filename(raw)
+    while true do
+        low = utf8.lower(norm)
+        if names[low] then
+            
+        else
+            break
+        end
+        norm = norm .. "x"
+    end
+    return norm
+end
+
 function update_folder(space_id, folder_id, fields, user_id, admin)
     db.begin()
     local message
@@ -2610,5 +2866,7 @@ return {
 	search_items_start = search_items_start,
 	search_items_get = search_items_get,
 	top_spaces = top_spaces,
-	find_folder_by_name = find_folder_by_name
+	find_folder_by_name = find_folder_by_name,
+	backup = backup,
+	restore_backup = restore_backup
 }

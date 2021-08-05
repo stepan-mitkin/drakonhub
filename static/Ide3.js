@@ -851,6 +851,10 @@ function changeId(node, id) {
     return copy
 }
 
+function chooseFile() {
+    get("file-input").click()
+}
+
 function clearClipboard() {
     setLsItem("clipboard type", "");
     setLsItem("clipboard", "");
@@ -1206,6 +1210,9 @@ function createState() {
     state.myHandlers.startLogon = startLogon
     state.myHandlers.startSignup = startSignup
     state.myHandlers.saveMobileInput = saveMobileInput
+    state.myHandlers.saveProject = saveAccess
+    state.myHandlers.chooseFile = chooseFile
+    state.myHandlers.loadFile = loadFile
     state.myHandlers.addWriter = addWriter
     state.myHandlers.addAdmin = addAdmin
     state.myHandlers.addReader = addReader
@@ -1295,6 +1302,14 @@ function doSendFeedback(text) {
     	success,
     	error
     )
+}
+
+function downloadFile(url, filename) {
+    console.log("downloadFile", url, filename)
+    var link = document.createElement("a")
+    link.href = url
+    link.download = filename
+    link.click()
 }
 
 function enableSignupOk() {
@@ -1606,6 +1621,16 @@ function goToUrl(url) {
     window.location.href = url
 }
 
+function handleBasicStatusChange(machine, request) {
+    if (request.readyState === 4) {
+        var result = {
+            responseText: request.responseText,
+            status: request.status
+        }
+        machine.onData(result)
+    }
+}
+
 function hideCentral() {
     if (globs.centralMachines.length == 0) {
         
@@ -1820,6 +1845,19 @@ function isReadonly() {
 function killCentral() {
     clearMachines()
     hideCentralCore()
+}
+
+function loadFile() {
+    var input = get("file-input")
+    var path = input.files[0]
+    if (path) {
+        sendToCentralMachine(path)
+    } else {
+        HtmlUtils.setText(
+        	"file-error",
+        	translate("MES_NO_FILE_CHOSEN")
+        )
+    }
 }
 
 function loadFont(italic, bold, family, file, onLoaded) {
@@ -5038,6 +5076,17 @@ function updateSignupButton() {
     }
 }
 
+function upload(url, name, file, machine) {
+    var req = new XMLHttpRequest()
+    var formData = new FormData()
+    req.onreadystatechange = function () {
+        handleBasicStatusChange(machine, req)
+    }
+    formData.append(name, file);
+    req.open("POST", url);
+    req.send(formData)
+}
+
 function validateFolderName(name) {
     name = name || ""
     name = name.trim()
@@ -5168,4 +5217,6 @@ this.showDemo = showDemo
 this.isDemoDiscarded = isDemoDiscarded
 this.showSaveProjectScreen = showSaveProjectScreen
 this.showLoadFromFile = showLoadFromFile
+this.upload = upload
+this.downloadFile = downloadFile
 }

@@ -46,6 +46,7 @@ global_cfg = {
 	max_recent = 20,
 	max_log = 50000,
 	tmp = "/dewt/tmp",
+	files = "/dewt/files",
 	debug_mail = true,
 	mg = false,
 	feedback_email = "drakon.editor@gmail.com",
