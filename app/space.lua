@@ -470,10 +470,6 @@ function clear_trash(space_id, user_id, admin)
             	space_id,
             	folder_id
             )
-            remove_from_trash(
-            	space_id,
-            	folder_id
-            )
         end
         db.commit()
         return nil
@@ -763,6 +759,18 @@ function def_query(data, user_id, admin)
 end
 
 function delete_folder(space_id, folder_id)
+    db.folder_tree_delete(
+    	space_id,
+    	folder_id
+    )
+    remove_from_recent(
+    	space_id,
+    	folder_id
+    )
+    remove_from_trash(
+    	space_id,
+    	folder_id
+    )
     delete_items(space_id, folder_id)
     db.folder_delete(
     	space_id,
@@ -771,10 +779,6 @@ function delete_folder(space_id, folder_id)
 end
 
 function delete_forever(space_id, folder_id)
-    db.folder_tree_delete(
-    	space_id,
-    	folder_id
-    )
     local children = get_child_folders(
     	space_id,
     	folder_id
@@ -897,23 +901,6 @@ function delete_recent(user_id)
     log_user_event(user_id, "delete_recent", {})
 end
 
-function delete_recent_and_folders(space_id)
-    local folders = db.folder_get_by_space(
-    	space_id
-    )
-    for _, folder in ipairs(folders) do
-        local folder_id = folder[2]
-        remove_from_recent(
-        	space_id,
-        	folder_id
-        )
-        delete_folder(
-        	space_id,
-        	folder_id
-        )
-    end
-end
-
 function delete_space(space_id, user_id, admin)
     local message = check_admin_access(
     	space_id,
@@ -925,9 +912,7 @@ function delete_space(space_id, user_id, admin)
     else
         local space = db.space_get(space_id)
         db.rights_delete_by_space(space_id)
-        delete_recent_and_folders(
-        	space_id
-        )
+        delete_space_folders(space_id)
         db.space_delete(space_id)
         log_user_event(
         	user_id,
@@ -936,6 +921,16 @@ function delete_space(space_id, user_id, admin)
         )
     end
     return message
+end
+
+function delete_space_folders(space_id)
+    local folders = db.folder_get_by_space(
+    	space_id
+    )
+    for _, row in ipairs(folders) do
+        local folder_id = row[2]
+        delete_folder(space_id, folder_id)
+    end
 end
 
 function delete_theme(user_id)
@@ -2156,7 +2151,7 @@ function remove_from_recent(space_id, folder_id)
         	folder_id,
         	user_id
         )
-        log.info("deleted: " .. folder_id)
+        log.info("deleted recent: " .. folder_id)
     end
 end
 
@@ -2276,11 +2271,19 @@ function restore_backup(space_id, body, user_id, roles)
                 if context.error then
                     return false, "Errors in structure"
                 else
-                    delete_recent_and_folders(
-                    	space_id
+                    delete_space_folders(space_id)
+                    local sdata = db.space_get(space_id)
+                    local now = clock.time()
+                    sdata.next_id = 2
+                    sdata.when_updated = now
+                    db.space_update(
+                    	space_id,
+                    	sdata
                     )
                     local root = diagrams[1]
+                    local children = root.children
                     root.name = "<root>"
+                    root.children = nil
                     db_create_folder(
                     	space_id,
                     	root_folder_id,
@@ -2290,7 +2293,7 @@ function restore_backup(space_id, body, user_id, roles)
                     	nil
                     )
                     restore_children(
-                    	root.children,	
+                    	children,	
                     	space_id,
                     	root_folder_id,
                     	user_id
