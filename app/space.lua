@@ -229,6 +229,11 @@ end
 
 function backup(space_id, user_id, roles)
     log.info("backup " .. space_id)
+    log_user_event(
+    	user_id,
+    	"backup",
+    	{space = space_id}
+    )
     local ok, data = prepare_backup(
     	space_id,
     	user_id,
@@ -892,6 +897,23 @@ function delete_recent(user_id)
     log_user_event(user_id, "delete_recent", {})
 end
 
+function delete_recent_and_folders(space_id)
+    local folders = db.folder_get_by_space(
+    	space_id
+    )
+    for _, folder in ipairs(folders) do
+        local folder_id = folder[2]
+        remove_from_recent(
+        	space_id,
+        	folder_id
+        )
+        delete_folder(
+        	space_id,
+        	folder_id
+        )
+    end
+end
+
 function delete_space(space_id, user_id, admin)
     local message = check_admin_access(
     	space_id,
@@ -903,20 +925,9 @@ function delete_space(space_id, user_id, admin)
     else
         local space = db.space_get(space_id)
         db.rights_delete_by_space(space_id)
-        local folders = db.folder_get_by_space(
+        delete_recent_and_folders(
         	space_id
         )
-        for _, folder in ipairs(folders) do
-            local folder_id = folder[2]
-            remove_from_recent(
-            	space_id,
-            	folder_id
-            )
-            delete_folder(
-            	space_id,
-            	folder_id
-            )
-        end
         db.space_delete(space_id)
         log_user_event(
         	user_id,
@@ -1067,6 +1078,12 @@ function extend_life(self)
     self.expiry = os.time() + timeout
 end
 
+function extract_multipart_body(payload)
+    local start = find_body_start(payload)
+    local body_end = find_body_end(payload)
+    return payload:sub(start, body_end)
+end
+
 function extract_parent_id(fields)
     local parent_id = fields.parent
     fields.parent = nil
@@ -1075,6 +1092,29 @@ function extract_parent_id(fields)
     else
         return parent_id
     end
+end
+
+function find_body_end(payload)
+    local i, b1, b2
+    i = #payload - 1
+    while true do
+        if i > 0 then
+            
+        else
+            return -1
+        end
+        b1 = payload:byte(i)
+        b2 = payload:byte(i + 1)
+        if (b1 == 13) and (b2 == 10) then
+            return i - 1
+        end
+        i = i - 1
+    end
+end
+
+function find_body_start(payload)
+    local first, last = payload:find("\r\n\r\n")
+    return last + 1
 end
 
 function find_cycle(space_id, moving_id, target_id)
@@ -1836,6 +1876,41 @@ function is_diagram_like(fields, names)
     end
 end
 
+function load_diagram(path, output, context)
+    local name = fio.basename(path, ".json")
+    local content = utils.read_all_bytes(path)
+    local diagram = json.decode(content)
+    diagram.name = name
+    table.insert(output, diagram)
+end
+
+function load_dir(path, output, context)
+    log.info("load_dir " .. path)
+    local name = fio.basename(path)
+    local fdata = {
+    	type = "folder",
+    	name = name,
+    	children = {}
+    }
+    table.insert(output, fdata)
+    load_project(path, fdata.children, context)
+end
+
+function load_project(folder, output, context)
+    local files = fio.listdir(folder)
+    for _, file in ipairs(files) do
+        local path = folder .. "/" .. file
+        if fio.path.is_dir(path) then
+            load_dir(path, output, context)
+        else
+            if utils.ends_with(file, ".json") then
+                load_diagram(path, output, context)
+            end
+        end
+    end
+    return true
+end
+
 function log_user_event(user_id, type, data)
     data.user_id = user_id
     ej.info(type, data)
@@ -2160,61 +2235,140 @@ function restore(space_id, folder_id, user_id, admin)
 end
 
 function restore_backup(space_id, body, user_id, roles)
-    ok, data = prepare_backup(
+    local names
+    log.info("restore_backup " .. space_id)
+    log_user_event(
+    	user_id,
+    	"restore_backup",
+    	{space = space_id}
+    )
+    local message = check_write_access(
     	space_id,
     	user_id,
     	roles
     )
-    if ok then
-        names = data
-        content = extract_multipart_body(body)
-        utils.write_all_bytes(names.path, content)
-        command = "unzip " .. names.path ..
-        	" -d " .. names.tmp
-        log.info(command)
-        cmd_result = os.execute(command)
-        log.info(cmd_result)
-        if cmd_result == 0 then
-            local diagrams = load_project(
-            	names.tmp
-            )
-            if diagrams then
-                delete_recent_and_folders(
-                	space_id
+    if message then
+        data = message
+        return false, data
+    else
+        local ok, data = prepare_backup(
+        	space_id,
+        	user_id,
+        	roles
+        )
+        if ok then
+            names = data
+            local content = extract_multipart_body(body)
+            utils.write_all_bytes(names.filename, content)
+            local command = "cd " .. names.folder .. "; unzip " .. 
+            	space_id .. ".zip"
+            log.info(command)
+            local cmd_result = os.execute(command)
+            log.info(cmd_result)
+            if cmd_result == 0 then
+                local context = {}
+                local diagrams = {}
+                load_project(
+                	names.folder,
+                	diagrams,
+                	context
                 )
-                local parents = {}
-                for folder_id, diagram in pairs(diagrams) do
-                    if diagram.parent_id then
-                        parents[folder_id] = diagram.parent_id
-                    end
-                    restore_diagram(
-                    	space_id,
-                    	folder_id,
-                    	diagram
+                if context.error then
+                    return false, "Errors in structure"
+                else
+                    delete_recent_and_folders(
+                    	space_id
                     )
+                    local root = diagrams[1]
+                    root.name = "<root>"
+                    db_create_folder(
+                    	space_id,
+                    	root_folder_id,
+                    	root,
+                    	user_id,
+                    	current_version,
+                    	nil
+                    )
+                    restore_children(
+                    	root.children,	
+                    	space_id,
+                    	root_folder_id,
+                    	user_id
+                    )
+                    schedule_delete(names.folder)
+                    return true, {}
                 end
-                for folder_id, diagram in pairs(diagrams) do
-                    local parent_id = parents[folder_id]
-                    if utils.is_empty(parent_id) then
-                        
-                    else
-                        add_child(
-                        	space_id,
-                        	parent_id,
-                        	folder_id,
-                        	diagram.created_by
-                        )
-                    end
-                end
-                return true, {}
             else
-                return false, "Errors in structure"
+                return false, "Could not unzip"
             end
         else
-            return false, "Could not unzip"
+            return false, data
         end
-    else
-        return false, data
+    end
+end
+
+function restore_children(children, space_id, parent_id, user_id)
+    for _, child in ipairs(children) do
+        if child.type == "folder" then
+            restore_folder(
+            	child,
+            	space_id,
+            	parent_id,
+            	user_id
+            )
+        else
+            restore_diagram(
+            	child,
+            	space_id,
+            	parent_id,
+            	user_id
+            )
+        end
+    end
+end
+
+function restore_diagram(fdata, space_id, parent_id, user_id)
+    local items = fdata.items
+    fdata.children = nil
+    fdata.items = nil
+    local ok, folder_id = create_folder_kernel(
+    	space_id,
+    	fdata,
+    	user_id,
+    	current_version,
+    	parent_id
+    )
+    if items then
+        for _, item in ipairs(items) do
+            local itemId = item.id
+            item.id = nil
+            db.item_insert(
+            	space_id,
+            	folder_id,
+            	itemId,
+            	item
+            )
+        end
+    end
+end
+
+function restore_folder(fdata, space_id, parent_id, user_id)
+    local children = fdata.children
+    fdata.children = nil
+    local ok, folder_id = create_folder_kernel(
+    	space_id,
+    	fdata,
+    	user_id,
+    	current_version,
+    	parent_id
+    )
+    if children then
+        restore_children(
+        	children,
+        	space_id,
+        	folder_id,
+        	user_id
+        )
     end
 end
 

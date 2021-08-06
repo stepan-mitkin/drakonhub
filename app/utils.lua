@@ -259,6 +259,16 @@ function days_to_secs(days)
     return days * 24 * 3600
 end
 
+function ends_with(what, with)
+    local start = #what - #with + 1
+    if start > 0 then
+        local sub = utf8.sub(what, start, #what)
+        return sub == with
+    else
+        return false
+    end
+end
+
 function filter(list, criterion)
     local result = {}
     if list then
@@ -1119,7 +1129,7 @@ function split(text, separator)
 end
 
 function starts_with(what, with)
-    local sub = what:sub(1, #with)
+    local sub = utf8.sub(what, 1, #with)
     return sub == with
 end
 
@@ -1387,6 +1397,7 @@ return {
 	replace_quoted_in_object = replace_quoted_in_object,
 	bulk_action = bulk_action,
 	bash_escape = bash_escape,
+	ends_with = ends_with,
 
 	map = map,
 	group_by = group_by,

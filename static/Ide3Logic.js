@@ -5036,23 +5036,23 @@ function onProjectContext(evt, type, widget, id, cellId) {
         folder = globs.folders[id]
         isReadonly = isReadonlyAccess(folder)
         isAdmin = (folder.access == "admin")
+        makeSeparator(
+            list
+        )
         if (isReadonly) {
             
         } else {
-            makeSeparator(
-                list
-            )
             makeTextListItem(
                 list,
                 "MES_LOAD_FROM_FILE",
                 function() {showLoadFromFile(spaceId)}
             )
-            makeTextListItem(
-                list,
-                "MES_SAVE_TO_FILE",
-                function() {showSaveToFile(spaceId)}
-            )
         }
+        makeTextListItem(
+            list,
+            "MES_SAVE_TO_FILE",
+            function() {showSaveToFile(spaceId)}
+        )
         if (isAdmin) {
             spaceId = parseId(id).spaceId
             makeSeparator(list)
@@ -5235,7 +5235,14 @@ function onTreeContextFolder(evt, tree, id) {
                 }
             }
             if (isReadonly) {
-                
+                makeSeparator(
+                    list
+                )
+                makeTextListItem(
+                    list,
+                    "MES_SAVE_TO_FILE",
+                    function() {showSaveToFile(folder.spaceId)}
+                )
             } else {
                 if (clipboardContainsFolders()) {
                     makeTextListItem(
@@ -6435,23 +6442,23 @@ function showProjectMenu(x, y, id) {
         "MES_DESCRIPTION",
         function() {changeDescription(id)}
     )
+    makeSeparator(
+        list
+    )
     if (isReadonly) {
         
     } else {
-        makeSeparator(
-            list
-        )
         makeTextListItem(
             list,
             "MES_LOAD_FROM_FILE",
             function() {showLoadFromFile(spaceId)}
         )
-        makeTextListItem(
-            list,
-            "MES_SAVE_TO_FILE",
-            function() {showSaveToFile(spaceId)}
-        )
     }
+    makeTextListItem(
+        list,
+        "MES_SAVE_TO_FILE",
+        function() {showSaveToFile(spaceId)}
+    )
     if (isAdmin) {
         makeSeparator(list)
         makeTextListItem(
