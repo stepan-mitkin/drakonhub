@@ -4,28 +4,13 @@ Install tarantool
 Instructions on how to install tarantool application server.
 
 
-Install Tarantool 1.9 base system
+Install Tarantool base system
 =================================
+
+Install the latest 1.x version of Tarantool available (for example 1.10).
+
 See instructions here:
-https://www.tarantool.io/en/download/os-installation/1.9/ubuntu/
-
-release=`lsb_release -c -s`
-
-apt-get -y install gnupg2
-apt-get -y install curl
-apt-get -y install lsb-release
-sudo apt-get -y install apt-transport-https
-
-curl http://download.tarantool.org/tarantool/1.9/gpgkey | sudo apt-key add -
-
-# Add Tarantool repositories
-sudo rm -f /etc/apt/sources.list.d/*tarantool*.list
-echo "deb http://download.tarantool.org/tarantool/1.9/ubuntu/ ${release} main" | sudo tee /etc/apt/sources.list.d/tarantool_1_9.list
-echo "deb-src http://download.tarantool.org/tarantool/1.9/ubuntu/ ${release} main" | sudo tee -a /etc/apt/sources.list.d/tarantool_1_9.list
-
-# install tarantool
-sudo apt-get -y update
-sudo apt-get -y install tarantool
+https://www.tarantool.io/en/download/os-installation/ubuntu/
 
 
 Stop the example instance 
@@ -42,14 +27,6 @@ Install tarantool modules
 
 sudo apt-get install luarocks
 sudo luarocks install luautf8
-
-sudo apt-get install lua-sec
-sudo apt-get install expat
-sudo apt-get install libexpat1-dev
-
-sudo luarocks install luaexpat
-sudo luarocks install luasoap
-
 
 
 Security note

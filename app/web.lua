@@ -33,8 +33,7 @@ local trans = require("trans")
 local mail = require("mail")
 local ej = require("ej")
 local lic = require("lic")
---local pay = require("pay")
---local payex = require("payex")
+
 local get_tarantool_status = get_tarantool_status
 
 -- configuration

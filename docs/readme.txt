@@ -7,13 +7,13 @@ System requirements:
 Ubuntu or Debian Linux. Other Linux distributives could work, but that is not tested.
 
 1. Install tarantool
-See install_tarantool.txt
+See https://github.com/stepan-mitkin/drakonhub/blob/master/docs/install_tarantool.txt
 
 2. Install DrakonHub
-See install_drakonhub.txt
+See https://github.com/stepan-mitkin/drakonhub/blob/master/docs/install_drakonhub.txt
 
-3. Configure SSL
-See setup_ssl.txt
+3. Configure the web server.
+Tarantool requires an SSL-enabled web server, for example nginx.
 
-If you have questions, write to support@drakonhub.com
-https://drakonhub.com
+
+
