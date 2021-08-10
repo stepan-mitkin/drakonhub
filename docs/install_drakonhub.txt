@@ -72,6 +72,12 @@ This is necessary for:
 Create an account with https://www.mailgun.com/ and get an API key.
 Put the API key in /dewt/app/external_creds.lua
 
+Example content of /dewt/app/external_creds.lua
+
+return {
+    mg_key = "key-123123123123123lalala"
+}
+
 Copy https_send.lua to /etc/tarantool/instances.available
 sudo cp /dewt/app/https_send.lua /etc/tarantool/instances.available/
 
