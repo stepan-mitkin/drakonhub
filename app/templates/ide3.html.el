@@ -732,6 +732,7 @@ window.onerror = pagePanic
 
 <%==include("EditorCtrl")%>
 <%==include("DraWidgets")%>
+<%==include("browser")%>
 <%==include("Ide3")%>
 <%==include("Ide3Logic")%>
 
