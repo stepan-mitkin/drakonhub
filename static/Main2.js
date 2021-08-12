@@ -525,7 +525,9 @@ function showUserPopup(evt) {
 
 function signup(next) {
     var product
-    window.location.href = "/static/dead.html"
+    if (Config.dead) {
+        window.location.href = "/static/dead.html"
+    }
     if ((gOnPremises) || (get("i_agree").checked)) {
         globs.next = next
         product = getQueryParameter("product")

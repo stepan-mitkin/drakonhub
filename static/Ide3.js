@@ -83,17 +83,19 @@ function addClickable(popup, text, action, style) {
 }
 
 function addDrakonHubClosed(parent) {
-    var banner = make(parent, "div")
-    banner.style.padding = "10px"
-    banner.style.fontSize = "30px"
-    banner.style.cursor = "pointer"
-    banner.style.background = "black"
-    banner.style.color = "red"
-    banner.style.border = "solid 2px red"
-    var text = translate("MES_DRAKONHUB_CLOSED")
-    HtmlUtils.setDivText(banner, text)
-    banner.onclick = function() {
-    	goToUrl("/static/dead.html")
+    if (Config.dead) {
+        var banner = make(parent, "div")
+        banner.style.padding = "10px"
+        banner.style.fontSize = "30px"
+        banner.style.cursor = "pointer"
+        banner.style.background = "black"
+        banner.style.color = "red"
+        banner.style.border = "solid 2px red"
+        var text = translate("MES_DRAKONHUB_CLOSED")
+        HtmlUtils.setDivText(banner, text)
+        banner.onclick = function() {
+        	goToUrl("/static/dead.html")
+        }
     }
 }
 
@@ -965,22 +967,24 @@ function createCentralCore(node, centralMachine) {
 }
 
 function createCloseBanner() {
-    var banner = make(document.body, "div")
-    banner.style.display = "inline-block"
-    banner.style.position = "fixed"
-    banner.style.left = "10px"
-    banner.style.bottom = "10px"
-    banner.style.padding = "10px"
-    banner.style.fontSize = "30px"
-    banner.style.zIndex = 1000
-    banner.style.cursor = "pointer"
-    banner.style.background = "black"
-    banner.style.color = "red"
-    banner.style.border = "solid 2px red"
-    var text = translate("MES_DRAKONHUB_CLOSED")
-    HtmlUtils.setDivText(banner, text)
-    banner.onclick = function() {
-    	goToUrl("/static/dead.html")
+    if (Config.dead) {
+        var banner = make(document.body, "div")
+        banner.style.display = "inline-block"
+        banner.style.position = "fixed"
+        banner.style.left = "10px"
+        banner.style.bottom = "10px"
+        banner.style.padding = "10px"
+        banner.style.fontSize = "30px"
+        banner.style.zIndex = 1000
+        banner.style.cursor = "pointer"
+        banner.style.background = "black"
+        banner.style.color = "red"
+        banner.style.border = "solid 2px red"
+        var text = translate("MES_DRAKONHUB_CLOSED")
+        HtmlUtils.setDivText(banner, text)
+        banner.onclick = function() {
+        	goToUrl("/static/dead.html")
+        }
     }
 }
 

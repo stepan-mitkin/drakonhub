@@ -4172,9 +4172,13 @@ function start()
     route("/favicon.ico", handle("favicon.ico"))
     temp_content_route("")
     temp_content_route("logon")
-    route("/signup", handle("dead.html"))
     temp_content_route("team")
     temp_route("/welcome", "welcome.html.el", false)
+    if global_cfg.dead then
+        route("/signup", handle("dead.html"))
+    else
+        temp_content_route("signup")
+    end
     temp_content_route("start-drakon")
     temp_content_route("start-mind-map")
     if global_cfg.on_premises then

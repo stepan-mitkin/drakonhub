@@ -49,6 +49,7 @@ global_cfg = {
 	files = "/dewt/files",
 	debug_mail = true,
 	mg = false,
+	dead = true,
 	feedback_email = "drakon.editor@gmail.com",
 	create_license = "basic",
 	licensing = true,
