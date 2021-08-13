@@ -4,7 +4,7 @@
   "description": "DrakonHub for Electron",
   "main": "src/index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron . /home/stipan/tmp/stipan"
   },
   "author": "Stepan Mitkin",
   "license": "ISC",

@@ -1,6 +1,8 @@
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
 
+const filename = process.argv[2]
+
 function createWindow () {
     const win = new BrowserWindow({
       width: 800,
@@ -14,6 +16,10 @@ function createWindow () {
 
     
     win.loadFile(path.join(__dirname, "index.html"))
+
+    win.webContents.on('did-finish-load', () => {
+      win.webContents.send('startFolder', filename)
+    })    
 }
 
 app.whenReady().then(() => {
@@ -27,3 +33,6 @@ app.whenReady().then(() => {
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
+
+
+

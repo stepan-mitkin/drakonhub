@@ -5,6 +5,8 @@
 /tmp
 /out-tsc
 
+dhub
+
 external_creds.lua
 
 .hg
