@@ -7,3 +7,6 @@ cp ../../static/fonts/LiberationSans-Bold.ttf dhub
 cp ../../static/fonts/LiberationSans-BoldItalic.ttf dhub
 cp ../../app/en-us-messages.json dhub
 cp ../../app/ru-messages.json dhub
+cp ../../static/drakosha-loading.png dhub
+cp ../../static/drakosha132.png dhub
+cp ../../static/logo-text-s-hub.png dhub

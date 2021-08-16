@@ -1,4 +1,6 @@
 {
+	"MES_OPEN_FOLDER": "Open project folder",
+	"MES_FORGET_RECENT": "Forget recent",
 	"MES_SAVE_TO_FILE": "Save to file",
 	"MES_LOAD_FROM_FILE": "Load from file",
 	"MES_LOAD_AND_REPLACE": "Load and replace",

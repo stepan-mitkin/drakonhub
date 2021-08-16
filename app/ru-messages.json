@@ -1,4 +1,6 @@
 {
+	"MES_OPEN_FOLDER": "Открыть папку проекта",
+	"MES_FORGET_RECENT": "Забыть недавние",
 	"MES_SAVE_TO_FILE": "Сохранить в файл",
 	"MES_LOAD_FROM_FILE": "Загрузить из файла",
 	"MES_LOAD_AND_REPLACE": "Загрузить и заменить",

@@ -1,10 +1,12 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path')
 
 const filename = process.argv[2]
 
+var mainWindow
+
 function createWindow () {
-    const win = new BrowserWindow({
+    mainWindow = new BrowserWindow({
       width: 800,
       height: 600,
       webPreferences: {
@@ -15,11 +17,22 @@ function createWindow () {
     })
 
     
-    win.loadFile(path.join(__dirname, "index.html"))
+    mainWindow.loadFile(path.join(__dirname, "index.html"))
 
-    win.webContents.on('did-finish-load', () => {
-      win.webContents.send('startFolder', filename)
-    })    
+    mainWindow.webContents.on('did-finish-load', () => {
+      mainWindow.webContents.send('startFolder', filename)
+    })
+
+    ipcMain.on("selectDirectory", selectDirectory)
+}
+
+async function selectDirectory() {
+  var result = await dialog.showOpenDialog(
+    mainWindow,
+    {properties:["openDirectory"]}
+  )
+
+  mainWindow.webContents.send("selectDirectory", result)
 }
 
 app.whenReady().then(() => {

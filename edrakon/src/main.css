@@ -417,3 +417,95 @@ input[type=checkbox] {
     user-select: none;
     white-space: nowrap;	
 }
+
+/* --- */
+#splash {
+	display: inline-block;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100vw;
+	height: 100vh;
+	background: white;
+}
+
+#splash img {
+	display: inline-block;
+	position: fixed;	
+	left:50%;
+	top:50%;
+	transform: translate(-50%, -50%);
+}
+
+#start {
+	display: inline-block;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100vw;
+	height: 100vh;
+	background: white;
+	overflow-y: auto;
+}
+
+.start-error {
+	padding: 20px;
+	color: darkred;
+}
+
+.start-top {
+	padding: 20px;
+}
+
+.start-logo {
+	display: inline-block;
+	vertical-align: middle;
+	width: 66px;
+	height: 66px;
+}
+
+.start-logo-text {
+	display: inline-block;
+	vertical-align: middle;
+	width: 100px;
+	height: 40px;
+}
+
+.start-middle {
+	margin:auto;
+	max-width:100%;
+	width: 800px;	
+}
+
+.start-buttons {
+	padding:20px;
+	text-align: center;
+}
+
+.start-button {	
+	border-radius: 5px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.start-button:active {
+	transform: translateY(2px);	
+}
+
+.open-button {
+	display: inline-block;
+	padding: 30px;	
+	background: coral;
+	color: white;
+}
+
+.start-recent-buttons {
+	text-align: right;
+	padding: 20px;
+}
+
+.forget-button {
+	padding: 20px;
+	background: rgb(69, 90, 100);
+	color: white;
+}
