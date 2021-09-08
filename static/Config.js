@@ -58,7 +58,7 @@ var Config = {
 	FONT_TIMEOUT: 15,
 	SEARCH_PERIOD: 200,
 	DIAGRAM_VERSION: 20180619,
-	dead: true
+	dead: false
 };
 
 var Const = {
