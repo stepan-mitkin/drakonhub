@@ -8,7 +8,7 @@ box.cfg {
 	vinyl_dir = "/dewt/data",
 	work_dir = "/dewt/app",
 	log = "/dewt/logs/log.txt",
-	memtx_memory = 512 * 1024 *1024,
+	memtx_memory = 600 * 1024 *1024,
 	checkpoint_interval = 7200,
 	custom_proc_title = "dew"
 }
