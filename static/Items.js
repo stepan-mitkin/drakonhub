@@ -2161,10 +2161,7 @@ function getLineThickness(item) {
 }
 
 function getLink(item) {
-    var disable = true
-    if ((disable) || (!(item.content))) {
-        return null
-    } else {
+    if (item.content) {
         if (item.content.status) {
             return item.content.status
         } else {
@@ -2179,11 +2176,13 @@ function getLink(item) {
                 return null
             }
         }
+    } else {
+        return null
     }
 }
 
 function getLinkHandle(item) {
-    if (((item.content) && (item.content.link)) && (getLink(item))) {
+    if ((item.content) && (item.content.link)) {
         var tpos = getMainTextPos(item)
         var pos = getLinkIconPos(
         	tpos.x,

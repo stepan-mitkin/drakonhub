@@ -5201,13 +5201,23 @@ function createItemDraggable(editor, itemId, x, y) {
             return result
         } else {
             if ((item.type === "insertion") && (hitText(item, x, y))) {
-                var result = new Draggable(
-                	itemId,
-                	Const.SUB,
-                	null
-                )
-                result.data = url
-                return result
+                if (link) {
+                    var result = new Draggable(
+                    	itemId,
+                    	Const.LINK,
+                    	null
+                    )
+                    result.data = url
+                    return result
+                } else {
+                    var result = new Draggable(
+                    	itemId,
+                    	Const.SUB,
+                    	null
+                    )
+                    result.data = url
+                    return result
+                }
             } else {
                 return new Draggable(
                 	itemId,
@@ -5223,13 +5233,23 @@ function createItemDraggable(editor, itemId, x, y) {
             url = undefined
         }
         if ((item.type === "insertion") && (hitText(item, x, y))) {
-            var result = new Draggable(
-            	itemId,
-            	Const.SUB,
-            	null
-            )
-            result.data = url
-            return result
+            if (link) {
+                var result = new Draggable(
+                	itemId,
+                	Const.LINK,
+                	null
+                )
+                result.data = url
+                return result
+            } else {
+                var result = new Draggable(
+                	itemId,
+                	Const.SUB,
+                	null
+                )
+                result.data = url
+                return result
+            }
         } else {
             return new Draggable(
             	itemId,
