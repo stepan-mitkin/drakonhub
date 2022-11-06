@@ -952,6 +952,7 @@ function edit(space_id, folder_id, data, user_id, admin)
         local fdata = result
         if fdata.tag == data.oldTag then
             copyNotNil(data, "name", fdata)
+            copyNotNil(data, "style", fdata)
             copyNotNil(data, "tag", fdata)
             copyNotNil(data, "background", fdata)
             copyNotNil(data, "diaLine", fdata)
@@ -1481,6 +1482,7 @@ function get_folder(space_id, folder_id, visit, user_id, admin)
             	diaLine = fdata.diaLine,
             	diaLineThickness = fdata.diaLineThickness,
             	font = fdata.font,
+            	style = fdata.style,
             	type = fdata.type,
             	tag = fdata.tag,
             	parent = parent,
