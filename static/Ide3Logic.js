@@ -809,13 +809,21 @@ function FolderShower_GettingTheme_onError(self, data) {
 
 function FolderShower_LoadingFonts_onData(self, data) {
     setTag(self.diagram)
+    console.log("meme", self.diagram)
     globs.saver = createSaver(self.diagram.tag)
-    getEditor().resetMode()
-    setActiveScreen(
-        "middle_diagram",
-        self.diagram.access
-    )
-    setDiagram(self)
+    if (self.diagram.type==="drakon2") {
+        setActiveScreen(
+            "middle_drakon2",
+            self.diagram.access
+        )
+    } else {
+        getEditor().resetMode()
+        setActiveScreen(
+            "middle_diagram",
+            self.diagram.access
+        )
+        setDiagram(self)
+    }
     globs.saver.loaded(self.diagram)
     complete(self, self.diagram)
     self.state = null;
@@ -3752,12 +3760,16 @@ function getImage(type) {
                 if (type === "mind") {
                     image = "list-mind.png"
                 } else {
-                    if (type === "free") {
-                        
+                    if (type === "drakon2") {
+                        image = "list-drakon-new.png"
                     } else {
-                        throw "Unexpected switch value: " + type;
+                        if (type === "free") {
+                            
+                        } else {
+                            throw "Unexpected switch value: " + type;
+                        }
+                        image = "list-free.png"
                     }
-                    image = "list-free.png"
                 }
             }
         }
@@ -4157,7 +4169,7 @@ function isDevUrl() {
 }
 
 function isDiagram() {
-    if (globs.current.screen == "middle_diagram") {
+    if ((globs.current.screen == "middle_diagram") || (globs.current.screen == "middle_drakon2")) {
         return true
     } else {
         return false
@@ -4173,10 +4185,14 @@ function isDiagramOrFolder() {
         if (_sw45860000_ === "middle_diagram") {
             return true
         } else {
-            if (_sw45860000_ === "middle_spaces") {
-                return false
+            if (_sw45860000_ === "middle_drakon2") {
+                return true
             } else {
-                return false
+                if (_sw45860000_ === "middle_spaces") {
+                    return false
+                } else {
+                    return false
+                }
             }
         }
     }
@@ -4227,7 +4243,7 @@ function isTryMeUrl() {
 }
 
 function isTypeDiagram(type) {
-    if (((type === "drakon") || (type === "free")) || (type === "mind")) {
+    if ((((type === "drakon") || (type === "free")) || (type === "drakon2")) || (type === "mind")) {
         return true
     } else {
         return false
@@ -4652,6 +4668,7 @@ function makeTopCodes() {
     return {
         "middle_folder" : "top_folder",
         "middle_diagram" : "top_diagram",
+        "middle_drakon2" : "top_drakon2",
         "middle_recent" : "top_empty",
         "middle_trash" : "top_empty",
         "middle_dashboard" : "top_empty",
@@ -4663,6 +4680,7 @@ function makeTopCodesNu() {
     return {
         "middle_folder" : "top_folder_nu",
         "middle_diagram" : "top_diagram_nu",
+        "middle_drakon2" : "top_drakon2_nu",
         "middle_spaces" : "top_spaces_nu"
     }
 }
@@ -4671,6 +4689,7 @@ function makeTopCodesRo() {
     return {
         "middle_folder" : "top_folder_ro",
         "middle_diagram" : "top_diagram_ro",
+        "middle_drakon2" : "top_drakon2_ro",
         "middle_recent" : "top_empty",
         "middle_trash" : "top_empty",
         "middle_spaces" : "top_spaces"
