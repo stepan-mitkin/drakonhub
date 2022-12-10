@@ -3136,8 +3136,11 @@ function handle_cookie(req, headers)
     	path,
     	true
     )
-    session_id = session.session_id
-    set_session_cookie(headers, session_id)
+    if session_id == session.session_id then
+        
+    else
+        set_session_cookie(headers, session.session_id)
+    end
     return session
 end
 
@@ -4124,10 +4127,10 @@ function set_content_type(headers, filename)
 end
 
 function set_session_cookie(headers, session_id)
-    local max_age = 3600 * 24 * 365 * 10
+    local max_age = 3600 * 24 * 30 * 6
     local expires_time = clock.time() + max_age
     local expires = cookie_date(expires_time)
-    local format = "session_id=%s; Expires=%s; Max-Age=%d; Path=/; HttpOnly;"
+    local format = "session_id=%s; Expires=%s; Max-Age=%d; Path=/; HttpOnly; SameSite=Strict;"
     if global_cfg.insecure_cookie then
         
     else
