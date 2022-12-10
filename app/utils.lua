@@ -836,7 +836,7 @@ end
 
 function random_string()
     local result = ""
-    local bytes = digest.urandom(20)
+    local bytes = digest.urandom(40)
     local i = 1
     while true do
         if i <= #bytes then
