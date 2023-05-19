@@ -2445,6 +2445,16 @@ function makeTopWidgetsDesc() {
     	style:{borderRadius:radius},
     	tooltip: "MES_REDO"
     }
+    var downloadButton = {
+    	hPadding:8, vPadding:8,
+    	signalId: "downloadDiagram",
+    	type: "text_button",
+    	text:"MES_DOWNLOAD_DIAGRAM",
+    	style: createStyle,
+    	tooltip: translate("MES_DOWNLOAD_DIAGRAM"),
+    	customWidth: 150
+    }
+    var down2 = Utils.copyObject(downloadButton)
     var exp = {
     	hPadding:buttonMargin, vPadding:buttonMargin,
     	signalId: "exportButton",
@@ -2547,7 +2557,7 @@ function makeTopWidgetsDesc() {
     	type: "hdock",
     	height: TopPanelHeight,
     	lefts: [mainMenu, create, undoButton, 
-    redoButton, exp, share, folder],
+    redoButton, downloadButton, exp, share, folder],
     	rights: rights,
     	style:{background:DarkBackground},
     	center: {
@@ -2609,7 +2619,7 @@ function makeTopWidgetsDesc() {
     	id: "top_diagram_ro",
     	type: "hdock",
     	height: TopPanelHeight,
-    	lefts: [mainMenu, exp2, share, folder],
+    	lefts: [mainMenu, down2, exp2, share, folder],
     	rights: rights,
     	style:{background:DarkBackground},
     	center: {

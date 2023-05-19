@@ -734,6 +734,7 @@ window.onerror = pagePanic
 <%==include("DraWidgets")%>
 <%==include("browser")%>
 <%==include("Ide3")%>
+<%==include("HubToPro")%>
 <%==include("Ide3Logic")%>
 
 <script src="/static/libs/canvas2svg.js"></script>

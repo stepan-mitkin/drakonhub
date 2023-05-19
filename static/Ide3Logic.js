@@ -2638,6 +2638,7 @@ function bindHandlers() {
     bind("accountButton", "click", accountButton)
     bind("showMainMenu", "click", showMainMenu)
     bind("saveDiagram", "click", saveDiagram)
+    bind("downloadDiagram", "click", downloadDiagram)
     bind("globalSearch", "input", globalSearch)
     bind("globalSearch", "escape", globalSearchEscape)
 }
@@ -3405,6 +3406,10 @@ function differentProjects(id1, id2) {
     } else {
         return true
     }
+}
+
+function downloadDiagram() {
+    getEditor().downloadDiagram()
 }
 
 function endAsync(onCompleted) {

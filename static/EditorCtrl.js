@@ -1484,6 +1484,26 @@ function diagramToClient(x, y) {
     return result
 }
 
+function downloadDiagram() {
+    var convertor = HubToPro()
+    var content = globals.editor.diagramToJson()
+    var converted = convertor.fromHubToPro(content)
+    downloadFile(converted.filename, converted.content)
+}
+
+function downloadFile(filename, data) {
+    var file, link, url;
+    file = new File([data], filename, { type: 'text/plain' });
+    link = document.createElement('a');
+    url = window.URL.createObjectURL(file);
+    link.href = url;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+}
+
 function editLink(itemId, content, x, y) {
     var dialogs = globals.dialogs
     diaClear()
@@ -4749,5 +4769,5 @@ this.endPan = endPan
 this.resetMode = resetMode
 
 this.startFreeScroll = startFreeScroll
-
+this.downloadDiagram = downloadDiagram
 }

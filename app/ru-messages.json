@@ -312,6 +312,7 @@
 	"MES_UP": "Вверх",
 	"MES_NO_ITEMS": "Нет объектов",
 	"MES_CLEAR_TRASH": "Удалить всё навсегда",
+	"MES_DOWNLOAD_DIAGRAM": "Скачать диаграмму",
 	"new_diagram": "+диаграмма",
 	"new_folder": "+папка",
 	"new_project": "+проект",

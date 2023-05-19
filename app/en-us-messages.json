@@ -312,6 +312,7 @@
 	"MES_UP": "Up",
 	"MES_NO_ITEMS": "No items",
 	"MES_CLEAR_TRASH": "Delete all forever",
+	"MES_DOWNLOAD_DIAGRAM": "Download diagram",
 	"new_diagram": "+diagram",
 	"new_folder": "+folder",
 	"new_project": "+project",

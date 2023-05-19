@@ -1,0 +1,3 @@
+wget https://app.drakon.tech/gen/IlT58v8sTxrAaXK5qlhwsRmH9KOCBsiD/HubToPro.js
+
+mv HubToPro.js static
