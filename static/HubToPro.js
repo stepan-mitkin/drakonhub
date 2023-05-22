@@ -308,6 +308,26 @@ function HubToPro() {
             }
         }
     }
+    function isDefaultFont(type, role, font) {
+        var defaultFont, defaultFontHeader, defaultFontBranch, _var2;
+        defaultFont = '14px \'Liberation Sans\'';
+        defaultFontHeader = 'bold 22px \'Liberation Sans\'';
+        defaultFontBranch = 'bold 18px \'Liberation Sans\'';
+        _var2 = type;
+        if (_var2 === 'beginend') {
+            if (role === 'header') {
+                return font === defaultFontHeader;
+            } else {
+                return font === defaultFont;
+            }
+        } else {
+            if (_var2 === 'branch') {
+                return font === defaultFontBranch;
+            } else {
+                return font === defaultFont;
+            }
+        }
+    }
     function copyDiaStyle(src, dst) {
         var context, format;
         var __state = '2';
@@ -335,7 +355,7 @@ function HubToPro() {
         }
     }
     function copyNodeStyle(src, dst) {
-        var content, context, format, defaultFont, _var2, _var3;
+        var content, context, format, _var2, _var3, _var4;
         var __state = '2';
         while (true) {
             switch (__state) {
@@ -361,9 +381,9 @@ function HubToPro() {
                 if (_var2) {
                     format.borderStyle = convertBorderStyle(content.lineStyle);
                     context.hasValue = true;
-                    __state = '27';
+                    __state = '_item3';
                 } else {
-                    __state = '27';
+                    __state = '_item3';
                 }
                 break;
             case '19':
@@ -386,11 +406,11 @@ function HubToPro() {
                     __state = '11';
                 }
                 break;
-            case '27':
-                defaultFont = '14px \'Liberation Sans\'';
+            case '_item3':
                 _var3 = hasValue(content.font);
                 if (_var3) {
-                    if (content.font === defaultFont) {
+                    _var4 = isDefaultFont(src.type, src.role, content.font);
+                    if (_var4) {
                         __state = '19';
                     } else {
                         format.font = convertFont(content.font);
