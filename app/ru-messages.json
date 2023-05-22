@@ -313,6 +313,7 @@
 	"MES_NO_ITEMS": "Нет объектов",
 	"MES_CLEAR_TRASH": "Удалить всё навсегда",
 	"MES_DOWNLOAD_DIAGRAM": "Скачать диаграмму",
+	"MES_DOWNLOAD_DIAGRAM_AS": "Скачать диаграмму в формате ДРАКОНПРО",
 	"new_diagram": "+диаграмма",
 	"new_folder": "+папка",
 	"new_project": "+проект",

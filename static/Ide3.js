@@ -2451,7 +2451,7 @@ function makeTopWidgetsDesc() {
     	type: "text_button",
     	text:"MES_DOWNLOAD_DIAGRAM",
     	style: createStyle,
-    	tooltip: translate("MES_DOWNLOAD_DIAGRAM"),
+    	tooltip: translate("MES_DOWNLOAD_DIAGRAM_AS"),
     	customWidth: 150
     }
     var down2 = Utils.copyObject(downloadButton)
