@@ -23,6 +23,7 @@ function HubToPro() {
                         __state = '8';
                     } else {
                         if (_var2 === 'free') {
+                            convertFreeFromHub(srcDiagram, diagram);
                             __state = '8';
                         } else {
                             throw new Error('Unexpected case value: ' + _var2);
@@ -369,6 +370,9 @@ function HubToPro() {
                     copyValue(content, 'lineThickness', format, 'borderWidth', context);
                     copyValue(content, 'align', format, 'textAlign', context);
                     copyValue(content, 'textColor', format, 'color', context);
+                    copyValue(content, 'arrowStart', format, 'tailStyle', context);
+                    copyValue(content, 'arrowEnd', format, 'headStyle', context);
+                    copyValue(content, 'lineThickness', format, 'lineWidth', context);
                     __state = '12';
                 } else {
                     __state = '11';
@@ -380,6 +384,7 @@ function HubToPro() {
                 _var2 = hasValue(content.lineStyle);
                 if (_var2) {
                     format.borderStyle = convertBorderStyle(content.lineStyle);
+                    format.lineStyle = format.borderStyle;
                     context.hasValue = true;
                     __state = '_item3';
                 } else {
@@ -1169,6 +1174,7 @@ function HubToPro() {
                     nodes: nodes,
                     edges: edges,
                     nextId: nextId,
+                    free: diagram.free || {},
                     background: diagram.background,
                     diaLine: diagram.diaLine,
                     diaLineThickness: diagram.diaLineThickness
@@ -1229,8 +1235,6 @@ function HubToPro() {
         var __state = '2';
         while (true) {
             switch (__state) {
-            case '1':
-                return;
             case '2':
                 branches = findBranches(srcDiagram);
                 if (srcDiagram.params) {
@@ -1243,23 +1247,25 @@ function HubToPro() {
             case '4':
                 if (branches.length === 0) {
                     convertPrimitiveFromHub(srcDiagram, diagram);
-                    __state = '10';
+                    __state = '11';
                 } else {
                     convertSilhouetteFromHub(srcDiagram, diagram);
-                    __state = '10';
+                    __state = '11';
                 }
                 break;
-            case '10':
-                copyDiaStyle(srcDiagram, diagram);
+            case '11':
                 headerNode = { type: 'header' };
                 copyNodeStyle(srcDiagram.header, headerNode);
                 if (headerNode.style) {
                     addProNode(diagram, 'header', headerNode);
-                    __state = '1';
+                    __state = '15';
                 } else {
-                    __state = '1';
+                    __state = '15';
                 }
                 break;
+            case '15':
+                convertFreeFromHub(srcDiagram, diagram);
+                return;
             default:
                 return;
             }
@@ -1272,6 +1278,34 @@ function HubToPro() {
         edge[edgeProp] = node;
         node[nodeProp] = edge;
         return;
+    }
+    function convertFreeFromHub(srcDiagram, diagram) {
+        var free, handlers, _var2, _var3, element;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                free = sortFreeIcons(srcDiagram.free);
+                handlers = buildFreeHandlers();
+                _var2 = free;
+                _var3 = 0;
+                __state = '6';
+                break;
+            case '6':
+                if (_var3 < _var2.length) {
+                    element = _var2[_var3];
+                    handleFreeElement(handlers, element, diagram);
+                    _var3++;
+                    __state = '6';
+                } else {
+                    copyDiaStyle(srcDiagram, diagram);
+                    return;
+                }
+                break;
+            default:
+                return;
+            }
+        }
     }
     function chooseNextId(nextId, nodeId) {
         var id, _var2;
@@ -1297,6 +1331,298 @@ function HubToPro() {
                 return;
             }
         }
+    }
+    function addAux1(handlers, from, to, auxProp) {
+        var newNode;
+        handlers[from] = function (node) {
+            newNode = handleSimpleFree(node, to);
+            copyAux1(node, newNode, auxProp);
+            return newNode;
+        };
+        return;
+    }
+    function addSimple(handlers, from, to) {
+        handlers[from] = makeSimpleFreeHandler(to);
+        return;
+    }
+    function handleFreeElement(handlers, node, diagram) {
+        var handler, newNode;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                handler = handlers[node.type];
+                if (handler) {
+                    __state = '7';
+                } else {
+                    console.log('Free element type not supported: ' + node.type + ', id: ' + node.id);
+                    handler = makeSimpleFreeHandler('rectangle');
+                    __state = '7';
+                }
+                break;
+            case '7':
+                newNode = handler(node);
+                newNode.zIndex = node.zIndex;
+                addProNode(diagram, node.id, newNode);
+                return;
+            default:
+                return;
+            }
+        }
+    }
+    function copyContent(src, dst) {
+        var upper, text, content;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                upper = getTxt2(src);
+                text = getTxt(src);
+                if (upper) {
+                    content = upper + '\n' + text;
+                    __state = '7';
+                } else {
+                    content = text;
+                    __state = '7';
+                }
+                break;
+            case '7':
+                dst.content = content;
+                return;
+            default:
+                return;
+            }
+        }
+    }
+    function handleMore(node) {
+        var newNode, subtype, handlers, type;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                subtype = node.content.subtype;
+                handlers = buildMoreHandlers();
+                type = handlers[subtype];
+                if (type) {
+                    __state = '4';
+                } else {
+                    type = 'rectangle';
+                    __state = '4';
+                }
+                break;
+            case '4':
+                newNode = handleSimpleFree(node, type);
+                return newNode;
+            default:
+                return;
+            }
+        }
+    }
+    function copyAux1(from, to, auxProp) {
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '1':
+                return;
+            case '2':
+                if (from.content) {
+                    to.aux = from.content[auxProp];
+                    __state = '1';
+                } else {
+                    __state = '1';
+                }
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    function handleCallout(node) {
+        var newNode;
+        newNode = handleSimpleFree(node, 'callout');
+        newNode.px = node.content.h0x + node.w;
+        newNode.py = node.content.h0y + node.h;
+        return newNode;
+    }
+    function buildFreeHandlers() {
+        var handlers;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                handlers = {};
+                addSimple(handlers, 'f_rectangle', 'rectangle');
+                addSimple(handlers, 'f_insertion', 'rectangle');
+                addSimple(handlers, 'f_circle', 'f_circle');
+                addSimple(handlers, 'shelf', 'rectangle');
+                addSimple(handlers, 'f_label', 'text');
+                addSimple(handlers, 'f_begin', 'f_begin');
+                addSimple(handlers, 'f_placeholder', 'placeholder');
+                addAux1(handlers, 'f_ptr_left', 'f_ptr_left', 'h0x');
+                addAux1(handlers, 'f_ptr_right', 'f_ptr_right', 'h0x');
+                addAux1(handlers, 'f_rounded', 'rounded', 'radius');
+                handlers['callout'] = handleCallout;
+                handlers['f_tab'] = handleTab;
+                handlers['f_line'] = handleLine;
+                __state = '21';
+                break;
+            case '20':
+                return handlers;
+            case '21':
+                handlers['f_more'] = handleMore;
+                addSimple(handlers, 'f_db', 'database');
+                addSimple(handlers, 'f_cloud', 'cloud');
+                __state = '20';
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    function buildMoreHandlers() {
+        return {
+            f_ar_human: 'human',
+            f_ar_portrait: 'portrait',
+            f_ar_pc: 'computer',
+            f_ar_notebook: 'notebook',
+            f_ar_server1: 'server1',
+            f_ar_server2: 'server2',
+            f_ar_phone: 'phone',
+            f_ar_tablet: 'tablet',
+            f_ui_menu: 'menu',
+            f_ui_hscroll: 'hscroll',
+            f_ui_vscroll: 'vscroll',
+            f_ui_check_true: 'check_true',
+            f_ui_check_false: 'check_false',
+            f_ui_radio_true: 'radio_true',
+            f_ui_radio_false: 'radio_false',
+            f_ui_cross: 'cross',
+            f_ui_check: 'check',
+            f_ui_left: 'left-angle',
+            f_ui_up: 'up-angle',
+            f_ui_right: 'right-angle',
+            f_ui_down: 'down-angle',
+            f_ui_left2: 'left-angle2',
+            f_ui_right2: 'right-angle2',
+            f_ui_dots3h: 'dots3h',
+            f_ui_dots3v: 'dots3v'
+        };
+    }
+    function copyRectCoords(src, dst) {
+        dst.left = src.x - src.w;
+        dst.top = src.y - src.h;
+        dst.width = src.w * 2;
+        dst.height = src.h * 2;
+        return;
+    }
+    function handleSimpleFree(node, type) {
+        var newNode;
+        newNode = { type: type };
+        copyRectCoords(node, newNode);
+        copyContent(node, newNode);
+        copyNodeStyle(node, newNode);
+        return newNode;
+    }
+    function handleTab(node) {
+        var newNode;
+        newNode = handleSimpleFree(node, 'tab');
+        newNode.aux = 10;
+        return newNode;
+    }
+    function sortFreeIcons(srcItems) {
+        var byNext, first, current, zIndex, result, _var3, _var2, _var4, id, element, _var6, _var5, _var7;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                byNext = {};
+                result = [];
+                _var3 = srcItems;
+                _var2 = Object.keys(_var3);
+                _var4 = 0;
+                __state = '7';
+                break;
+            case '4':
+                return result;
+            case '5':
+                _var6 = srcItems;
+                _var5 = Object.keys(_var6);
+                _var7 = 0;
+                __state = '10';
+                break;
+            case '6':
+                _var4++;
+                __state = '7';
+                break;
+            case '7':
+                if (_var4 < _var2.length) {
+                    id = _var2[_var4];
+                    element = _var3[id];
+                    if (element.next) {
+                        byNext[element.next] = element;
+                        __state = '6';
+                    } else {
+                        __state = '6';
+                    }
+                } else {
+                    __state = '5';
+                }
+                break;
+            case '10':
+                if (_var7 < _var5.length) {
+                    id = _var5[_var7];
+                    element = _var6[id];
+                    if (id in byNext) {
+                        _var7++;
+                        __state = '10';
+                    } else {
+                        first = element;
+                        __state = '14';
+                    }
+                } else {
+                    __state = '4';
+                }
+                break;
+            case '14':
+                zIndex = 1;
+                current = first;
+                __state = '29';
+                break;
+            case '29':
+                current.zIndex = zIndex;
+                zIndex++;
+                result.push(current);
+                if (current.next) {
+                    current = srcItems[current.next];
+                    __state = '29';
+                } else {
+                    __state = '4';
+                }
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    function handleLine(node) {
+        var newNode;
+        newNode = {
+            type: 'line',
+            left: node.x,
+            top: node.y,
+            x2: node.w,
+            y2: node.h
+        };
+        copyContent(node, newNode);
+        copyNodeStyle(node, newNode);
+        return newNode;
+    }
+    function makeSimpleFreeHandler(type) {
+        var _var2;
+        return function (node) {
+            _var2 = handleSimpleFree(node, type);
+            return _var2;
+        };
     }
     function FilenameSymbolChecker() {
         var self = {};
