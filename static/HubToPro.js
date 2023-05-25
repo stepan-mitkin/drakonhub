@@ -158,7 +158,7 @@ function HubToPro() {
         return;
     }
     function handleSelect(node, stack, diagram) {
-        var below, selectNode, prev, junc, current, caseNode, one, _var2, _var3, _var4;
+        var below, selectNode, prev, junc, current, caseNode, one, _var2;
         var __state = '2';
         while (true) {
             switch (__state) {
@@ -169,12 +169,11 @@ function HubToPro() {
                 __state = '5';
                 break;
             case '4':
-                _var2 = getTxt(node);
                 selectNode = {
                     type: 'select',
-                    content: _var2,
                     one: prev.id
                 };
+                copyContent(node, selectNode);
                 addProNode(diagram, node.id, selectNode);
                 return selectNode;
             case '5':
@@ -193,15 +192,14 @@ function HubToPro() {
                 break;
             case '21':
                 current = getDown(junc);
-                _var4 = getDown(current);
-                one = getNextHub(_var4);
+                _var2 = getDown(current);
+                one = getNextHub(_var2);
                 stack.push(one);
-                _var3 = getTxt(current);
                 caseNode = {
                     type: 'case',
-                    content: _var3,
                     one: one.id
                 };
+                copyContent(current, caseNode);
                 if (prev) {
                     caseNode.two = prev.id;
                     __state = '16';
@@ -254,19 +252,18 @@ function HubToPro() {
         return newNode;
     }
     function handleQuestion(node, stack, diagram) {
-        var newNode, content, one, two, _var2, _var3;
+        var newNode, one, two, _var2, _var3;
         _var2 = getDown(node);
         _var3 = getRight(node);
         one = getNextHub(_var2);
         two = getNextHub(_var3);
-        content = getTxt(node);
         newNode = {
             type: 'question',
-            content: content,
             flag1: node.flag1,
             one: one.id,
             two: two.id
         };
+        copyContent(node, newNode);
         addProNode(diagram, node.id, newNode);
         stack.push(two);
         stack.push(one);
@@ -296,15 +293,14 @@ function HubToPro() {
         };
     }
     function handlePrim(node, stack, diagram, type) {
-        var newNode, next, content, _var2;
-        content = getTxt(node);
+        var newNode, next, _var2;
         _var2 = getDown(node);
         next = getNextHub(_var2);
         newNode = {
             type: type,
-            content: content,
             one: next.id
         };
+        copyContent(node, newNode);
         addProNode(diagram, node.id, newNode);
         stack.push(next);
         return newNode;
@@ -1526,7 +1522,7 @@ function HubToPro() {
         }
     }
     function convertSilhouetteFromHub(srcDiagram, diagram) {
-        var handlers, silBranch, firstNode, branchId, branches, _var2, _var3, branch, _var4, _var5;
+        var handlers, silBranch, firstNode, branchId, branches, _var2, _var3, branch, _var4;
         var __state = '2';
         while (true) {
             switch (__state) {
@@ -1541,17 +1537,16 @@ function HubToPro() {
             case '12':
                 if (_var3 < _var2.length) {
                     branch = _var2[_var3];
-                    _var5 = getDown(branch);
-                    firstNode = getNextHub(_var5);
-                    _var4 = getTxt(branch);
+                    _var4 = getDown(branch);
+                    firstNode = getNextHub(_var4);
                     silBranch = {
                         type: 'branch',
                         branchId: branchId,
-                        content: _var4,
                         one: firstNode.id
                     };
                     addProNode(diagram, branch.id, silBranch);
                     copyNodeStyle(branch, silBranch);
+                    copyContent(branch, silBranch);
                     convertDrakonManhattan(handlers, firstNode, diagram);
                     branchId++;
                     _var3++;
