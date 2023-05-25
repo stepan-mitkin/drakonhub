@@ -1,14 +1,77 @@
 function HubToPro() {
     var unit = {};
+    function connectTrees(diagram) {
+        var ids, nodes, notJuncs, juncs, _var4, _var5, node, _var2, _var3, junction, _var6;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                ids = Object.keys(diagram.nodes);
+                nodes = ids.map(function (id) {
+                    return diagram.nodes[id];
+                });
+                notJuncs = nodes.filter(function (node) {
+                    return node.type !== 'junction';
+                });
+                juncs = nodes.filter(function (node) {
+                    return node.type === 'junction';
+                });
+                __state = '11';
+                break;
+            case '10':
+                return;
+            case '11':
+                _var4 = notJuncs;
+                _var5 = 0;
+                __state = '13';
+                break;
+            case '13':
+                if (_var5 < _var4.length) {
+                    node = _var4[_var5];
+                    _var2 = juncs;
+                    _var3 = 0;
+                    __state = '15';
+                } else {
+                    __state = '10';
+                }
+                break;
+            case '14':
+                _var3++;
+                __state = '15';
+                break;
+            case '15':
+                if (_var3 < _var2.length) {
+                    junction = _var2[_var3];
+                    if (junction.owner) {
+                        __state = '14';
+                    } else {
+                        _var6 = isInside(node, junction);
+                        if (_var6) {
+                            junction.owner = node;
+                            node.subtree = junction;
+                            __state = '14';
+                        } else {
+                            __state = '14';
+                        }
+                    }
+                } else {
+                    _var5++;
+                    __state = '13';
+                }
+                break;
+            default:
+                return;
+            }
+        }
+    }
     function fromHubToPro(content) {
-        var name, filename, obj, diagram, diagramStr, srcDiagram, _var2;
+        var name, obj, diagram, diagramStr, srcDiagram, filename, _var2;
         var __state = '2';
         while (true) {
             switch (__state) {
             case '2':
                 obj = JSON.parse(content);
                 name = makeFilename(obj.name);
-                filename = name + '.' + obj.type;
                 srcDiagram = connectHubGraph(obj);
                 diagram = {
                     type: obj.type,
@@ -19,7 +82,9 @@ function HubToPro() {
                     convertDrakonFromHub(srcDiagram, diagram);
                     __state = '8';
                 } else {
-                    if (_var2 === 'graf') {
+                    if (_var2 === 'mind') {
+                        diagram.type = 'graf';
+                        convertGrafFromHub(srcDiagram, diagram);
                         __state = '8';
                     } else {
                         if (_var2 === 'free') {
@@ -33,6 +98,7 @@ function HubToPro() {
                 break;
             case '8':
                 diagramStr = JSON.stringify(diagram, null, 4);
+                filename = name + '.' + diagram.type;
                 return {
                     filename: filename,
                     content: diagramStr
@@ -269,39 +335,27 @@ function HubToPro() {
         handlers['output'] = handleDouble;
         return handlers;
     }
-    function convertSilhouetteFromHub(srcDiagram, diagram) {
-        var handlers, silBranch, firstNode, branchId, branches, _var2, _var3, branch, _var4, _var5;
+    function copyFillColor(context, content, format) {
+        var parts, color;
         var __state = '2';
         while (true) {
             switch (__state) {
+            case '1':
+                return;
             case '2':
-                branches = makeBranchList(srcDiagram);
-                handlers = buildNodeHandlers();
-                branchId = 1;
-                _var2 = branches;
-                _var3 = 0;
-                __state = '12';
-                break;
-            case '12':
-                if (_var3 < _var2.length) {
-                    branch = _var2[_var3];
-                    _var5 = getDown(branch);
-                    firstNode = getNextHub(_var5);
-                    _var4 = getTxt(branch);
-                    silBranch = {
-                        type: 'branch',
-                        branchId: branchId,
-                        content: _var4,
-                        one: firstNode.id
-                    };
-                    addProNode(diagram, branch.id, silBranch);
-                    copyNodeStyle(branch, silBranch);
-                    convertDrakonManhattan(handlers, firstNode, diagram);
-                    branchId++;
-                    _var3++;
-                    __state = '12';
+                color = content.fillColor;
+                if (color) {
+                    context.hasValue = true;
+                    parts = color.split(' ');
+                    if (parts.length === 1) {
+                        format.iconBack = color;
+                        __state = '1';
+                    } else {
+                        format.iconBack = parts[parts.length - 1];
+                        __state = '1';
+                    }
                 } else {
-                    return;
+                    __state = '1';
                 }
                 break;
             default:
@@ -356,7 +410,7 @@ function HubToPro() {
         }
     }
     function copyNodeStyle(src, dst) {
-        var content, context, format, _var2, _var3, _var4;
+        var content, context, format, _var2, _var3, _var4, _var5;
         var __state = '2';
         while (true) {
             switch (__state) {
@@ -365,8 +419,7 @@ function HubToPro() {
                 if (content) {
                     context = { hasValue: false };
                     format = {};
-                    copyValue(content, 'lineColor', format, 'iconBorder', context);
-                    copyValue(content, 'fillColor', format, 'iconBack', context);
+                    copyFillColor(context, content, format);
                     copyValue(content, 'lineThickness', format, 'borderWidth', context);
                     copyValue(content, 'align', format, 'textAlign', context);
                     copyValue(content, 'textColor', format, 'color', context);
@@ -381,14 +434,14 @@ function HubToPro() {
             case '11':
                 return;
             case '12':
-                _var2 = hasValue(content.lineStyle);
-                if (_var2) {
-                    format.borderStyle = convertBorderStyle(content.lineStyle);
-                    format.lineStyle = format.borderStyle;
+                _var5 = hasValue(content.lineColor);
+                if (_var5) {
+                    format.iconBorder = content.lineColor;
+                    format.lines = content.lineColor;
                     context.hasValue = true;
-                    __state = '_item3';
+                    __state = '_item2';
                 } else {
-                    __state = '_item3';
+                    __state = '_item2';
                 }
                 break;
             case '19':
@@ -409,6 +462,17 @@ function HubToPro() {
                     __state = '11';
                 } else {
                     __state = '11';
+                }
+                break;
+            case '_item2':
+                _var2 = hasValue(content.lineStyle);
+                if (_var2) {
+                    format.borderStyle = convertBorderStyle(content.lineStyle);
+                    format.lineStyle = format.borderStyle;
+                    context.hasValue = true;
+                    __state = '_item3';
+                } else {
+                    __state = '_item3';
                 }
                 break;
             case '_item3':
@@ -519,26 +583,212 @@ function HubToPro() {
             }
         }
     }
-    function makeBranchList(diagram) {
-        var junc, result, branch;
+    function handleGrafNode(node, type) {
+        var newNode;
+        newNode = { type: type };
+        copyContent(node, newNode);
+        copyNodeStyle(node, newNode);
+        return newNode;
+    }
+    function addGraf(handlers, from, to) {
+        var _var2;
+        handlers[from] = function (node) {
+            _var2 = handleGrafNode(node, to);
+            return _var2;
+        };
+        return;
+    }
+    function convertGrafFromHub(srcDiagram, diagram) {
+        var treeType, root;
         var __state = '2';
         while (true) {
             switch (__state) {
             case '2':
-                result = [];
-                junc = getDown(diagram.header);
-                __state = '10';
-                break;
-            case '10':
-                branch = getDown(junc);
-                result.push(branch);
-                if (junc.right) {
-                    junc = getRight(junc);
-                    __state = '10';
+                connectTrees(srcDiagram);
+                treeType = buildTree(srcDiagram, diagram);
+                convertHeadAndFree(srcDiagram, diagram, 'root');
+                root = diagram.items['root'];
+                if (root) {
+                    __state = '11';
                 } else {
-                    return result;
+                    root = { type: 'header' };
+                    diagram.items['root'] = root;
+                    __state = '11';
                 }
                 break;
+            case '11':
+                root.treeType = treeType;
+                return;
+            default:
+                return;
+            }
+        }
+    }
+    function buildSubtree(handlers, parentId, start, treeType, diagram) {
+        var below, junc, ordinal, child, _var2;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                _var2 = treeType;
+                if (_var2 === 'vertical') {
+                    below = getDown(start);
+                    if (below.type === 'junction') {
+                        __state = '10';
+                    } else {
+                        __state = '35';
+                    }
+                } else {
+                    if (_var2 === 'treeview') {
+                        __state = '11';
+                    } else {
+                        throw new Error('Unexpected case value: ' + _var2);
+                    }
+                }
+                break;
+            case '9':
+                return;
+            case '10':
+                below = getDown(start);
+                junc = goLeft(below);
+                ordinal = 0;
+                __state = '19';
+                break;
+            case '11':
+                junc = getDown(start);
+                ordinal = 0;
+                __state = '27';
+                break;
+            case '15':
+                if (junc.right) {
+                    junc = getRight(junc);
+                    __state = '19';
+                } else {
+                    __state = '9';
+                }
+                break;
+            case '19':
+                if (junc.down) {
+                    child = getDown(junc);
+                    createGrafNode(handlers, parentId, ordinal, child, diagram);
+                    ordinal++;
+                    __state = '15';
+                } else {
+                    __state = '15';
+                }
+                break;
+            case '27':
+                child = goRight(junc);
+                createGrafNode(handlers, parentId, ordinal, child, diagram);
+                ordinal++;
+                if (junc.down) {
+                    junc = getDown(junc);
+                    __state = '27';
+                } else {
+                    __state = '9';
+                }
+                break;
+            case '35':
+                ordinal = 0;
+                createGrafNode(handlers, parentId, ordinal, below, diagram);
+                __state = '9';
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    function buildGrafHandlers() {
+        var handlers;
+        handlers = {};
+        addGraf(handlers, 'action', 'idea');
+        addGraf(handlers, 'raction', 'ridea');
+        return handlers;
+    }
+    function createGrafNode(handlers, parentId, ordinal, node, diagram) {
+        var handler, newNode, start, nodeType, _var2;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '1':
+                return;
+            case '2':
+                handler = handlers[node.type];
+                if (handler) {
+                    __state = '8';
+                } else {
+                    handler = function (node) {
+                        _var2 = handleGrafNode(node, 'idea');
+                        return _var2;
+                    };
+                    __state = '8';
+                }
+                break;
+            case '8':
+                newNode = handler(node);
+                if (node.down) {
+                    start = node;
+                    nodeType = 'vertical';
+                    __state = '14';
+                } else {
+                    if (node.subtree) {
+                        start = node.subtree;
+                        nodeType = 'treeview';
+                        __state = '14';
+                    } else {
+                        start = undefined;
+                        nodeType = 'treeview';
+                        __state = '14';
+                    }
+                }
+                break;
+            case '14':
+                newNode.parent = parentId;
+                newNode.treeType = nodeType;
+                newNode.ordinal = ordinal;
+                addProNode(diagram, node.id, newNode);
+                if (start) {
+                    buildSubtree(handlers, node.id, start, nodeType, diagram);
+                    __state = '1';
+                } else {
+                    __state = '1';
+                }
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    function buildTree(srcDiagram, diagram) {
+        var header, handlers, start, treeType;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                handlers = buildGrafHandlers();
+                header = srcDiagram.header;
+                if (header.left) {
+                    start = getLeft(header);
+                    treeType = 'treeview';
+                    __state = '9';
+                } else {
+                    if (header.down) {
+                        start = header;
+                        treeType = 'vertical';
+                        __state = '9';
+                    } else {
+                        treeType = 'vertical';
+                        __state = '17';
+                    }
+                }
+                break;
+            case '9':
+                buildSubtree(handlers, 'root', start, treeType, diagram);
+                __state = '17';
+                break;
+            case '17':
+                header.treeType = treeType;
+                return treeType;
             default:
                 return;
             }
@@ -734,11 +984,49 @@ function HubToPro() {
             return true;
         }
     }
-    function genNextId(srcDiagram) {
-        var id;
-        id = srcDiagram.nextId;
-        srcDiagram.nextId++;
-        return id;
+    function getLink(node) {
+        if (node.content) {
+            return node.content.link || '';
+        } else {
+            return '';
+        }
+    }
+    function isInside(node, point) {
+        var left, right, top, bottom, x, y;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                left = node.x - node.w;
+                right = node.x + node.w;
+                top = node.y - node.h;
+                bottom = node.y + node.h;
+                x = point.x;
+                y = point.y;
+                if (x >= left) {
+                    if (x < right) {
+                        if (y >= top) {
+                            if (y < bottom) {
+                                return true;
+                            } else {
+                                __state = '10';
+                            }
+                        } else {
+                            __state = '10';
+                        }
+                    } else {
+                        __state = '10';
+                    }
+                } else {
+                    __state = '10';
+                }
+                break;
+            case '10':
+                return false;
+            default:
+                return;
+            }
+        }
     }
     function getLeft(node) {
         return node.left.head;
@@ -1063,63 +1351,14 @@ function HubToPro() {
             }
         }
     }
-    function goDown(node) {
-        var __state = '2';
-        while (true) {
-            switch (__state) {
-            case '2':
-                __state = '6';
-                break;
-            case '6':
-                if (node.down) {
-                    node = getDown(node);
-                    __state = '6';
-                } else {
-                    return node;
-                }
-                break;
-            default:
-                return;
-            }
-        }
-    }
-    function findBranches(srcDiagram) {
-        var result, _var3, _var2, _var4, id, node;
-        var __state = '2';
-        while (true) {
-            switch (__state) {
-            case '2':
-                result = [];
-                _var3 = srcDiagram.nodes;
-                _var2 = Object.keys(_var3);
-                _var4 = 0;
-                __state = '6';
-                break;
-            case '5':
-                _var4++;
-                __state = '6';
-                break;
-            case '6':
-                if (_var4 < _var2.length) {
-                    id = _var2[_var4];
-                    node = _var3[id];
-                    if (node.type === 'branch') {
-                        result.push(node);
-                        __state = '5';
-                    } else {
-                        __state = '5';
-                    }
-                } else {
-                    return result;
-                }
-                break;
-            default:
-                return;
-            }
-        }
+    function genNextId(srcDiagram) {
+        var id;
+        id = srcDiagram.nextId;
+        srcDiagram.nextId++;
+        return id;
     }
     function connectHubGraph(diagram) {
-        var nodes, edges, item, srcNodes, srcEdges, header, params, nextId, _var3, _var2, _var4, id, node, _var6, _var5, _var7, edge;
+        var nodes, edges, item, srcNodes, srcEdges, srcFree, header, params, nextId, _var3, _var2, _var4, id, node, _var6, _var5, _var7, edge, _var9, _var8, _var10, element;
         var __state = '2';
         while (true) {
             switch (__state) {
@@ -1128,6 +1367,7 @@ function HubToPro() {
                 params = undefined;
                 srcNodes = diagram.nodes || {};
                 srcEdges = diagram.edges || {};
+                srcFree = diagram.free || {};
                 nextId = 1;
                 nodes = {};
                 edges = {};
@@ -1202,13 +1442,183 @@ function HubToPro() {
                         __state = '22';
                     }
                 } else {
-                    __state = '8';
+                    __state = '33';
                 }
                 break;
             case '22':
                 edges[id] = item;
                 _var7++;
                 __state = '13';
+                break;
+            case '33':
+                _var9 = srcFree;
+                _var8 = Object.keys(_var9);
+                _var10 = 0;
+                __state = '35';
+                break;
+            case '35':
+                if (_var10 < _var8.length) {
+                    id = _var8[_var10];
+                    element = _var9[id];
+                    nextId = chooseNextId(nextId, id);
+                    _var10++;
+                    __state = '35';
+                } else {
+                    __state = '8';
+                }
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    function connectHubItem(nodes, edge, edgeProp, nodeProp) {
+        var nodeId, node;
+        nodeId = edge[edgeProp];
+        node = nodes[nodeId];
+        edge[edgeProp] = node;
+        node[nodeProp] = edge;
+        return;
+    }
+    function chooseNextId(nextId, nodeId) {
+        var id, _var2;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                id = parseInt(nodeId);
+                _var2 = isNaN(id);
+                if (_var2) {
+                    __state = '5';
+                } else {
+                    if (id >= nextId) {
+                        return id + 1;
+                    } else {
+                        __state = '5';
+                    }
+                }
+                break;
+            case '5':
+                return nextId;
+            default:
+                return;
+            }
+        }
+    }
+    function goDown(node) {
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                __state = '6';
+                break;
+            case '6':
+                if (node.down) {
+                    node = getDown(node);
+                    __state = '6';
+                } else {
+                    return node;
+                }
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    function convertSilhouetteFromHub(srcDiagram, diagram) {
+        var handlers, silBranch, firstNode, branchId, branches, _var2, _var3, branch, _var4, _var5;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                branches = makeBranchList(srcDiagram);
+                handlers = buildNodeHandlers();
+                branchId = 1;
+                _var2 = branches;
+                _var3 = 0;
+                __state = '12';
+                break;
+            case '12':
+                if (_var3 < _var2.length) {
+                    branch = _var2[_var3];
+                    _var5 = getDown(branch);
+                    firstNode = getNextHub(_var5);
+                    _var4 = getTxt(branch);
+                    silBranch = {
+                        type: 'branch',
+                        branchId: branchId,
+                        content: _var4,
+                        one: firstNode.id
+                    };
+                    addProNode(diagram, branch.id, silBranch);
+                    copyNodeStyle(branch, silBranch);
+                    convertDrakonManhattan(handlers, firstNode, diagram);
+                    branchId++;
+                    _var3++;
+                    __state = '12';
+                } else {
+                    return;
+                }
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    function makeBranchList(diagram) {
+        var junc, result, branch;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                result = [];
+                junc = getDown(diagram.header);
+                __state = '10';
+                break;
+            case '10':
+                branch = getDown(junc);
+                result.push(branch);
+                if (junc.right) {
+                    junc = getRight(junc);
+                    __state = '10';
+                } else {
+                    return result;
+                }
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    function findBranches(srcDiagram) {
+        var result, _var3, _var2, _var4, id, node;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                result = [];
+                _var3 = srcDiagram.nodes;
+                _var2 = Object.keys(_var3);
+                _var4 = 0;
+                __state = '6';
+                break;
+            case '5':
+                _var4++;
+                __state = '6';
+                break;
+            case '6':
+                if (_var4 < _var2.length) {
+                    id = _var2[_var4];
+                    node = _var3[id];
+                    if (node.type === 'branch') {
+                        result.push(node);
+                        __state = '5';
+                    } else {
+                        __state = '5';
+                    }
+                } else {
+                    return result;
+                }
                 break;
             default:
                 return;
@@ -1231,7 +1641,7 @@ function HubToPro() {
         return;
     }
     function convertDrakonFromHub(srcDiagram, diagram) {
-        var branches, headerNode;
+        var branches;
         var __state = '2';
         while (true) {
             switch (__state) {
@@ -1247,86 +1657,38 @@ function HubToPro() {
             case '4':
                 if (branches.length === 0) {
                     convertPrimitiveFromHub(srcDiagram, diagram);
-                    __state = '11';
+                    __state = '21';
                 } else {
                     convertSilhouetteFromHub(srcDiagram, diagram);
-                    __state = '11';
+                    __state = '21';
                 }
                 break;
-            case '11':
+            case '21':
+                convertHeadAndFree(srcDiagram, diagram, 'header');
+                return;
+            default:
+                return;
+            }
+        }
+    }
+    function convertHeadAndFree(srcDiagram, diagram, headerId) {
+        var headerNode;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
                 headerNode = { type: 'header' };
                 copyNodeStyle(srcDiagram.header, headerNode);
                 if (headerNode.style) {
-                    addProNode(diagram, 'header', headerNode);
-                    __state = '15';
+                    addProNode(diagram, headerId, headerNode);
+                    __state = '8';
                 } else {
-                    __state = '15';
+                    __state = '8';
                 }
                 break;
-            case '15':
+            case '8':
                 convertFreeFromHub(srcDiagram, diagram);
                 return;
-            default:
-                return;
-            }
-        }
-    }
-    function connectHubItem(nodes, edge, edgeProp, nodeProp) {
-        var nodeId, node;
-        nodeId = edge[edgeProp];
-        node = nodes[nodeId];
-        edge[edgeProp] = node;
-        node[nodeProp] = edge;
-        return;
-    }
-    function convertFreeFromHub(srcDiagram, diagram) {
-        var free, handlers, _var2, _var3, element;
-        var __state = '2';
-        while (true) {
-            switch (__state) {
-            case '2':
-                free = sortFreeIcons(srcDiagram.free);
-                handlers = buildFreeHandlers();
-                _var2 = free;
-                _var3 = 0;
-                __state = '6';
-                break;
-            case '6':
-                if (_var3 < _var2.length) {
-                    element = _var2[_var3];
-                    handleFreeElement(handlers, element, diagram);
-                    _var3++;
-                    __state = '6';
-                } else {
-                    copyDiaStyle(srcDiagram, diagram);
-                    return;
-                }
-                break;
-            default:
-                return;
-            }
-        }
-    }
-    function chooseNextId(nextId, nodeId) {
-        var id, _var2;
-        var __state = '2';
-        while (true) {
-            switch (__state) {
-            case '2':
-                id = parseInt(nodeId);
-                _var2 = isNaN(id);
-                if (_var2) {
-                    __state = '5';
-                } else {
-                    if (id > nextId) {
-                        return id + 1;
-                    } else {
-                        __state = '5';
-                    }
-                }
-                break;
-            case '5':
-                return nextId;
             default:
                 return;
             }
@@ -1371,24 +1733,33 @@ function HubToPro() {
         }
     }
     function copyContent(src, dst) {
-        var upper, text, content;
+        var upper, text, link, content;
         var __state = '2';
         while (true) {
             switch (__state) {
             case '2':
                 upper = getTxt2(src);
                 text = getTxt(src);
+                link = getLink(src);
                 if (upper) {
                     content = upper + '\n' + text;
-                    __state = '7';
+                    __state = '8';
                 } else {
                     content = text;
-                    __state = '7';
+                    __state = '8';
                 }
                 break;
             case '7':
                 dst.content = content;
                 return;
+            case '8':
+                if (link) {
+                    dst.link = link;
+                    __state = '7';
+                } else {
+                    __state = '7';
+                }
+                break;
             default:
                 return;
             }
@@ -1464,6 +1835,7 @@ function HubToPro() {
                 handlers['callout'] = handleCallout;
                 handlers['f_tab'] = handleTab;
                 handlers['f_line'] = handleLine;
+                handlers['gdur'] = handleGroupDuration;
                 __state = '21';
                 break;
             case '20':
@@ -1514,6 +1886,43 @@ function HubToPro() {
         dst.width = src.w * 2;
         dst.height = src.h * 2;
         return;
+    }
+    function handleGroupDuration(node) {
+        var newNode, content;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                newNode = {
+                    type: 'group-duration',
+                    x: node.x,
+                    y: node.y
+                };
+                copyContent(node, newNode);
+                copyNodeStyle(node, newNode);
+                content = node.content;
+                if (content.right) {
+                    newNode.flag1 = true;
+                    newNode.loX = -content.h1x;
+                    newNode.loY = content.h1y;
+                    newNode.hiX = -content.h0x;
+                    newNode.hiY = -content.h0y;
+                    __state = '4';
+                } else {
+                    newNode.flag1 = false;
+                    newNode.loX = content.h1x;
+                    newNode.loY = content.h1y;
+                    newNode.hiX = content.h0x;
+                    newNode.hiY = -content.h0y;
+                    __state = '4';
+                }
+                break;
+            case '4':
+                return newNode;
+            default:
+                return;
+            }
+        }
     }
     function handleSimpleFree(node, type) {
         var newNode;
@@ -1616,6 +2025,34 @@ function HubToPro() {
         copyContent(node, newNode);
         copyNodeStyle(node, newNode);
         return newNode;
+    }
+    function convertFreeFromHub(srcDiagram, diagram) {
+        var free, handlers, _var2, _var3, element;
+        var __state = '2';
+        while (true) {
+            switch (__state) {
+            case '2':
+                free = sortFreeIcons(srcDiagram.free);
+                handlers = buildFreeHandlers();
+                _var2 = free;
+                _var3 = 0;
+                __state = '6';
+                break;
+            case '6':
+                if (_var3 < _var2.length) {
+                    element = _var2[_var3];
+                    handleFreeElement(handlers, element, diagram);
+                    _var3++;
+                    __state = '6';
+                } else {
+                    copyDiaStyle(srcDiagram, diagram);
+                    return;
+                }
+                break;
+            default:
+                return;
+            }
+        }
     }
     function makeSimpleFreeHandler(type) {
         var _var2;
