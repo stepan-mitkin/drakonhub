@@ -1384,7 +1384,7 @@ function HubToPro() {
                     item = clone(node);
                     item.id = id;
                     nodes[id] = item;
-                    if (item.type === 'beginend') {
+                    if (item.role === 'header') {
                         header = item;
                         __state = '5';
                     } else {
