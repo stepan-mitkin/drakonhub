@@ -9,6 +9,6 @@
   "author": "Stepan Mitkin",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^13.1.8"
+    "electron": "^18.3.7"
   }
 }
