@@ -30,7 +30,7 @@ local msgpack = require("msgpack")
 local pickle = require("pickle")
 local fun = require('fun')
 local socket = require("socket")
-local lxp = require("lxp")
+
 
 
 local a_code = string.byte("a")
