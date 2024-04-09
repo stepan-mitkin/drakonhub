@@ -835,7 +835,6 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 			<div class="center" style="padding-top:40px; color:#8b0000; max-width:768px; text-align:center; padding-bottom:20px; line-height:130%; font-size:90%;">
 				DRAKON Labs Stepan Mitkin<br />				
 				Org nr 915415431<br />
-				Løkentoppen 21, Kolsås 1352, Norway<br />
 				<a style="color:#8b0000;" href="mailto:drakon.editor@gmail.com">drakon.editor@gmail.com</a><br />
 				<a href="/terms" style="color:#8b0000;"><%=trans("MES_TERMS")%></a>
 				

@@ -1289,7 +1289,6 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 			% if not on_premises then
 			<p style="text-align:center;"><%=trans("Feedback")%>: <a style="color:white;" href="mailto:drakon.editor@gmail.com">drakon.editor@gmail.com</a></p>
 			<p style="text-align:center;">DRAKON Labs</p>
-			<p style="text-align:center;">Løkentoppen 21, Kolsås 1352, Norway</p>
 			<p style="text-align:center;"><a href="/terms" style="color:white;"><%=trans("MES_TERMS")%></a></p>
 			%end
 			<div style="margin:30px;"><a style="color:white; max-width:100px; margin-bottom:30px;" href="#ui"><%=trans("MES_TO_TOP")%></a></div>

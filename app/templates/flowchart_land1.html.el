@@ -1229,7 +1229,6 @@ em {
 
 		<div style="height:30px;"></div>
 		<p style="text-align:center;"><%=trans("Feedback")%>: <a style="color:white;" href="mailto:drakon.editor@gmail.com">drakon.editor@gmail.com</a></p>
-		<p style="text-align:center;">Løkentoppen 21, Kolsås 1352, Norway</p>
 		<div style="padding:10px;">Copyright 2015-2018 DRAKON Labs</div>
 		<div style="margin:30px;"><a style="color:white; max-width:100px; margin-bottom:30px;" href="#ui"><%=trans("MES_TO_TOP")%></a></div>
 	</div>
