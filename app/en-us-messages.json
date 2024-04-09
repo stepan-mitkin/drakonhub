@@ -313,7 +313,7 @@
 	"MES_NO_ITEMS": "No items",
 	"MES_CLEAR_TRASH": "Delete all forever",
 	"MES_DOWNLOAD_DIAGRAM": "Download diagram",
-	"MES_DOWNLOAD_DIAGRAM_AS": "Download diagram in DRAKONPRO format",
+	"MES_DOWNLOAD_DIAGRAM_AS": "Download as a diagram for desktop DrakonHub",
 	"new_diagram": "+diagram",
 	"new_folder": "+folder",
 	"new_project": "+project",
