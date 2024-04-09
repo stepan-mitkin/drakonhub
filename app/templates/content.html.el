@@ -1140,7 +1140,7 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 								<span class="top_menu_item"><a href="/static/adm.html">Administration</a></span>
 							%else
 								% if not on_premises then
-									<span class="top_menu_item tech"><a href="https://drakon.tech/">Drakon.Tech</a></span>
+									<span class="top_menu_item tech"><a href="https://drakonhub.com/read/download"><%=trans("Download")%></a></span>
 									<span class="top_menu_item"><a href="/drakonhub-source">Source</a></span>
 								%end
 							%end
@@ -1339,7 +1339,7 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 	% end	
 	
 	% if not on_premises then
-	<a href="https://drakon.tech/" class="mob_menu_item_link" >Drakon.Tech</a>
+	<a href="https://drakonhub.com/read/download" class="mob_menu_item_link" ><%=trans("Download")%></a>
 	<a href="/drakonhub-source" class="mob_menu_item_link" >Source</a>
 	% end
 	<a href="https://drakonhub.com/read/docs" class="mob_menu_item_link" ><%=trans("Documentation")%></a>
