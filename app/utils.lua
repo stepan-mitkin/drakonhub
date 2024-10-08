@@ -462,6 +462,7 @@ end
 
 function http_post(url, data, mime, headers, user)
     local tmp = os.tmpname()
+    local tmp0 = os.tmpname()
     local header_str = ""
     local user_str = ""
     if headers then
@@ -473,9 +474,11 @@ function http_post(url, data, mime, headers, user)
     if user then
         user_str = "-u '" .. user .. "'"
     end
+    log.info(tmp0 .. " > " .. tmp)
+    write_all_bytes(tmp0, data)
     local command = string.format(
-    	'curl -X POST --data \'%s\' -H "Content-type: %s" %s %s %s > %s',
-    	data,
+    	'curl -X POST --data @\'%s\' -H "Content-type: %s" %s %s %s > %s',
+    	tmp0,
     	mime,
     	header_str,
     	user_str,
@@ -487,6 +490,7 @@ function http_post(url, data, mime, headers, user)
     local response = read_all_bytes(tmp)
     log.info(tostring(response))
     os.remove(tmp)
+    os.remove(tmp0)
     return response
 end
 

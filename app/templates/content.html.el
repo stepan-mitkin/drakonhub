@@ -337,7 +337,7 @@ ol li {
 }
 
 .top_menu {
-	display:inline-block; position:fixed; left:0px; top:60px; width:100%;
+	display:inline-block; position:fixed; left:0px; top:0px; width:100%;
 	height:60px;
 	background: #455A64;
 /*	border-bottom: solid 1px #c0c0c0;
@@ -345,7 +345,7 @@ ol li {
 }
 
 .under_top_menu {
-	height:120px;
+	height:60px;
 }
 
 .top_menu_mob {
@@ -1125,11 +1125,6 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 % if not skip_header then
 			
 		<div class="top_menu desktop_only">
-			% if language == "ru" then
-			<div style="box-sizing: border-box; display:inline-block; position:fixed; left:0px; top:0px; width:100%; height: 60px; padding: 10px; background:darkred; color: white;">DrakonHub будет навсегда отключен 1 декабря 2024 <a href="/static/dead.html" style="color: white; font-weight: bold;">Узнать больше...</a></div>			
-			% else
-			<div style="box-sizing: border-box; display:inline-block; position:fixed; left:0px; top:0px; width:100%; height: 60px; padding: 10px; background:darkred; color: white;">DrakonHub will shut down forever on December 1, 2024 <a href="/static/dead.html" style="color: white; font-weight: bold;">Read more...</a></div>
-			% end
 			<table class="menu_table">
 				
 				<tr style="height:60px;">

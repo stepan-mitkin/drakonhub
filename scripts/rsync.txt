@@ -1,7 +1,0 @@
-
-rsync -avz backuper@drakon-editor.com:/dewt/data/*.snap /home/stipan/backup/data/
-rsync -avz backuper@drakon-editor.com:/dewt/journal/* /home/stipan/backup/journal/
-
-
-*/10 * * * * rsync -avz backuper@drakon-editor.com:/dewt/data/*.snap /home/stipan/backup/data/
-12 * * * * rsync -avz backuper@drakon-editor.com:/dewt/journal/* /home/stipan/backup/journal/

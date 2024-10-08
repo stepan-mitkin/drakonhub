@@ -1,3 +1,0 @@
-#!/bin/bash
-
-hg push ssh://stipan@six//dew
