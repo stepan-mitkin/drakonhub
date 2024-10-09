@@ -1,6 +1,8 @@
 # DrakonHub
 
-The source code for **DrakonHub** diagram editor.
+The source code for the web-based **DrakonHub** diagram editor.
+
+To get the desktop version of **DrakonHub**, go to https://github.com/stepan-mitkin/drakonhub_desktop
 
 DrakonHub server runs on [tarantool 1.10](https://www.tarantool.io) and requires Linux.
 
@@ -26,9 +28,9 @@ Ubuntu or Debian Linux. Other Linux distributives could work but that is not tes
 
 **Install Tarantool**
 
-Install Tarantool 1.10. Follow instructions here:
+Install Tarantool 2. Follow instructions here:
 
-https://www.tarantool.io/en/doc/1.10/book/cartridge/cartridge_cli/installation/
+https://www.tarantool.io/en/download/os-installation/ubuntu/
 
 **Stop the example instance**
 
