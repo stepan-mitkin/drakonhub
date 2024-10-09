@@ -1,10 +1,10 @@
 # DrakonHub
 
-The source code for the web-based **DrakonHub** diagram editor.
+Here, you can find the source code and releases for the web-based **DrakonHub** diagram editor.
 
 To get the desktop version of **DrakonHub**, go to https://github.com/stepan-mitkin/drakonhub_desktop
 
-DrakonHub server runs on [tarantool 1.10](https://www.tarantool.io) and requires Linux.
+DrakonHub server runs on [tarantool 2](https://www.tarantool.io) and requires Linux.
 
 DrakonHub is written in DRAKON-JavaScript and DRAKON-Lua.
 
@@ -20,54 +20,50 @@ PUBLIC DOMAIN
 
 ## System requirements
 
-Ubuntu or Debian Linux. Other Linux distributives could work but that is not tested.
+- Ubuntu Linux. Other Linux distributives could work but that is not tested.
+- Tarantool 2.x.
 
 ## How to install DrakonHub
 
 
-
-**Install Tarantool**
+### Install Tarantool
 
 Install Tarantool 2. Follow instructions here:
 
 https://www.tarantool.io/en/download/os-installation/ubuntu/
 
-**Stop the example instance**
-
-After installation of tarantool, an example application instance might be installed.
-If it is, we need to remove it.
-
-sudo tarantoolctl stop example
-sudo rm /etc/tarantool/instances.enabled/example.lua
-
-
-**Install tarantool modules**
+### Install tarantool modules
 
 sudo apt-get install luarocks
+
 sudo luarocks install luautf8
 
+### Security note
 
-**Security note**
+Close ports 3301 and 8090 from external access in the production environment.
+If this is not done, the database will be available to the outside world, and DrakonHub server will be available without HTTPS.
 
-Close ports 3301 and 8090 from external access.
-If this is not done, the database will be available to the outside world.
-
-**Download DrakonHub**
+### Download DrakonHub
 
 - Download a DrakonHub release from GitHub Releases https://github.com/stepan-mitkin/drakonhub/releases
 - Unzip the release into a folder on your Linux machine. The config expects the path to be /drakonhub.
-- Change the configuration values in app/dewt.lua
-- Copy dewt.lua to /etc/tarantool/instances.available
-- Make a soft link from /etc/tarantool/instances.available/dewt.lua to /etc/tarantool/instances.enabled
+- Put the proper configuration values in app/dewt.lua
 
-**Configuration**
+### Configuration
 
-- Make sure the path where the DrakonHub release was unzipped to matches **src_path** variable in dewt.lua
+- Make sure the installation folder matches **src_path** variable in dewt.lua
 - **memtx_memory** property is the size of the in-memory database. It must not be larger than 50% of the RAM.
 - **listen** property is the port that the tarantool server is listening on.
 - **port** property is the port that the DrakonHub server is accepting HTTP requests on.
+- Make sure the **host** property is the actual host value from the HTTP requests. For example, if DrakonHub runs behind nginx and in nginx configuration, the requests are forwarded to 127.0.0.1, the **host** property should be "127.0.0.1".
 
-**How to configure mailgun**
+### Running in a virtual machine
+
+- Make sure that network in the virtual machine is configured as Bridged Adapter.
+- Put the proper value in the **host** property in the DrakonHub configuration file (app/dewt.lua or app/dbgcfg.lua). It should be the bridged IP address, for example 192.168.10.196.
+- Add **insecure_cookie = true** in the **global_cfg** section.
+
+### How to configure mailgun
 
 By default, emails are saved in the **tmp** folder.
 
@@ -76,21 +72,29 @@ To start sending emails via Mailgun, do the following:
 - In dewt.lua, set **debug_mail** to false.
 - In dewt.lua, set **mg** to true.
 
-**How to start DrakonHub**
+### How to start DrakonHub
 
-sudo tarantoolctl start dewt
+- Go to **app** folder in your DrakonHub installation.
+- tarantool dewt.lua
 
-**How to stop DrakonHub**
+To run the server in the interactive mode, run
 
-sudo tarantoolctl stop dewt
+tarantool dbgcfg.lua
 
-**How to connect to DrakonHub from our browser**
+Do not forget to edit the dbgcfg.lua configuration file.
+
+
+### How to stop DrakonHub
+
+sudo killall tarantool
+
+### How to connect to DrakonHub from our browser
 
 http://localhost:8090/
 
 In a production environment, put DrakonHub behind a proper HTTP server, for example nginx.
 
-**Admin interface**
+### Admin interface
 
 http://localhost:8090/static/adm.html
 
