@@ -43,15 +43,16 @@ global_cfg = {
 	files = data_path .. "files",
 	debug_mail = true,
 	mg = false,
-	feedback_email = "drakon.editor@gmail.com",
+	feedback_email = "support@example.com",
 	create_license = "basic",
 	licensing = false,
-	my_site = "https://drakonhub.com",
-	my_domain = "drakonhub.com",
-	my_ip = "62.122.254.187",
+	my_site = "https://example.com",
+	my_domain = "example.com",
+	my_ip = "44.44.44.44",
 	complete_delay = 0,
 	on_premises = false,
 	capterra = false,
+	email_from = "DrakonHub Support <support@example.com>",
 	application = "DrakonHub"
 }
 
