@@ -1,6 +1,6 @@
 
-local src_path = "/home/stipan/src/drakonhub/"
-local data_path = "/home/stipan/src/dewt_data/"
+local src_path = "/home/stipan/code/drakonhub/"
+local data_path = "/dewt/"
 
 box.cfg {
 	background = false,
@@ -11,7 +11,7 @@ box.cfg {
 	vinyl_dir = data_path .. "data",
 	work_dir = src_path .. "app",
 	log = data_path .. "logs/log.txt",
-	memtx_memory = 512 * 1024 * 1024,
+	memtx_memory = 2048 * 1024 * 1024,
 	checkpoint_interval = 600,
 	custom_proc_title = "dew"
 }
@@ -62,10 +62,10 @@ global_cfg = {
 	my_domain = "example.com",
 	my_ip = "44.44.44.44",
 	complete_delay = 2,
-	on_premises = true,
+	on_premises = false,
 	capterra = false,
 	email_from = "DrakonHub Support <support@example.com>",
-	application = "DrakonHub",
+	application = "DrakonHub Local",
 	insecure_cookie = true
 }
 

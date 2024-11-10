@@ -798,7 +798,7 @@ var logic = null
 if (HtmlUtils.isBrowserSupported()) {
 	
 	ide = new Ide3(window, document, translate, gUserId, pagePanic)
-	logic = new Ide3Logic(gUserId, ide, translate)
+	logic = new Ide3Logic(gUserId, ide, translate, application)
 	ide.logic = logic
 	
 	

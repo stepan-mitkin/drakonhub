@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" href="/static/favicon.png" />
 
 
-<title>DrakonHub Terms of Service</title>
+<title><%=application%> Terms of Service</title>
 
 <!-- Copyright 2015-2018 DRAKON Labs -->
 
@@ -670,7 +670,7 @@ ol li {
 			<table style="width:100%;">
 				<tr>
 					<td width="52" style=""><a href="/"><img width="52" height="52" src="/static/images/drakosha104b.png" style="vertical-align: top;"></img></a></td>
-					<td width="100%" style="text-align:right;"><h1 style="color:#BE2921; font-size:150%; font-weight:bold; margin:0px;">DrakonHub Terms of Service</h1></td>
+					<td width="100%" style="text-align:right;"><h1 style="color:#BE2921; font-size:150%; font-weight:bold; margin:0px;"><%=application%> Terms of Service</h1></td>
 				</tr>
 			</table>
 		</div>
@@ -682,8 +682,6 @@ ol li {
 
 
 <h2 id="general_conditions">General conditions</h2>
-
-<p>Unless otherwise specified, the Website shall refer to drakonhub.com.</p>
 
 <p>By using the Website and DRAKON Labs account ("Service") you agree to the following terms of service ("Terms") by DRAKON Labs Stepan Mitkin ("DRAKON Labs"). If you disagree with the Terms of Service, you must not use the Website and Service. </p>
 
@@ -724,7 +722,7 @@ ol li {
 <p>Payments for the Service are accepted through PayEx payment system using VISA, MasterCard and Maestro payment cards.</p>
 <p>After the payment has been successfully completed, the Website will send you the order confirmation by email.</p>
 <p>DRAKON Labs is exempt from VAT.</p>
-<p>Inquiries related to payments should be sent to the customer support by email: <a href="mailto:drakon.editor@gmail.com">drakon.editor@gmail.com</a>.</p>
+<p>Inquiries related to payments should be sent to the customer support by email: <a href="mailto:<%=feedback_email%>"><%=feedback_email%></a>.</p>
 
 <h2 id="termination_due_to_breach">Termination of your account due to breach of the Terms</h2>
 
@@ -817,9 +815,8 @@ ol li {
 
 <h2 id="website_and_contact">Website and contact information</h2>
 
-<p>The website <a href="https://drakonhub.com/">https://drakonhub.com/</a> is owned and operated by DRAKON Labs Stepan Mitkin with Norwegian registration number 915 415 431. </p>
 
-<p>You can contact DRAKON Labs by using the e-mail <a href="mailto:drakon.editor@gmail.com">drakon.editor@gmail.com</a>. </p>
+<p>You can contact DRAKON Labs by using the e-mail <a href="mailto:<%=feedback_email%>"><%=feedback_email%></a>. </p>
 
 
 			
@@ -829,7 +826,7 @@ ol li {
 
 	<div>
 		<div class="center" style="padding-top:70px; color:#8b0000; max-width:768px; text-align:center;">
-			<%=trans("Feedback")%>: <a style="color:#8b0000;" href="mailto:drakon.editor@gmail.com">drakon.editor@gmail.com</a>
+			<%=trans("Feedback")%>: <a style="color:#8b0000;" href="mailto:<%=feedback_email%>"><%=feedback_email%></a>
 			<div style="font-size:110%; padding:10px;">Copyright 2015-2018 DRAKON Labs</div>
 		</div>
 	</div>		

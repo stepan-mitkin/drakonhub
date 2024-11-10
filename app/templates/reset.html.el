@@ -240,11 +240,7 @@ input {
 
 <body style="background:white;">
 <div style="margin-bottom:20px">
-% if on_premises then	
-	<a href="/"><img src="/static/branding-text-img-s.png" width="185" height="40" /></a>	
-% else
-	<a href="/"><img src="/static/logo-text-img-s.png" width="185" height="40" alt="<%=application%>" /></a>
-% end
+	<a href="/"><%=application%></a>
 	<h1 style="font-weight:bold; font-size:120%; display:inline"><%=trans("reset password")%></h1>
 </div>
 

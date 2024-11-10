@@ -208,6 +208,7 @@ function send_mg(user_id, to, subject, text, html, attach)
     local key = external_creds.mg_key
     local sender = g_from
     local mg = "https://api.mailgun.net/v3/mg."
+    mg = "https://api.eu.mailgun.net/v3/mg."
     local subject2 = utils.bash_escape(subject)
     local text2 = utils.bash_escape(text)
     local command = "curl -s --user 'api:" .. key .. "' " ..

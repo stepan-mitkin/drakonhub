@@ -18,12 +18,6 @@
 
 <title><%= title %></title>
 
-
-
-
-
-<!-- Copyright 2015-2018 DRAKON Labs -->
-
 <style>
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
@@ -1130,7 +1124,7 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 				<tr style="height:60px;">
 					<td style="width:185px;">
 						<a href="/">
-							<img src="/static/logo-text-img-s-2-hub.png" width="140" height="40" alt="DrakonHub logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
+							<img src="/static/logo-text-img-s-2-hub.png" width="140" height="40" alt="<%=application%> logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
 						</a>
 					</td>
 
@@ -1138,13 +1132,8 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 						% if content_path ~= "signup" then
 							% if admin then
 								<span class="top_menu_item"><a href="/static/adm.html">Administration</a></span>
-							%else
-								% if not on_premises then
-									<span class="top_menu_item tech"><a href="https://drakonhub.com/read/download"><%=trans("Download")%></a></span>
-									<span class="top_menu_item"><a href="/drakonhub-source">Source</a></span>
-								%end
 							%end
-							<span class="top_menu_item"><a href="https://drakonhub.com/read/docs"><%=trans("Documentation")%></a></span>
+							<span class="top_menu_item"><a href="/read/docs"><%=trans("Documentation")%></a></span>
 							% if user_id == "" then
 							<span class="top_menu_item"><a href="/logon" id="logon"><%=trans("Login")%></a></span>
 							% if content_path ~= "signup" and content_path ~= "logon" and content_path ~= "start-drakon" and content_path ~= "start-mind-map" and content_path ~= "signup-trial" and content_path ~= "trial" then
@@ -1170,7 +1159,7 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 				<tr style="height:50px;">
 					<td style="width:185px;">
 						<a href="/">
-							<img src="/static/logo-text-img-s-hub.png" width="120" height="40" alt="DrakonHub logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
+							<img src="/static/logo-text-img-s-hub.png" width="120" height="40" alt="<%=application%> logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
 						</a>
 					</td>
 
@@ -1256,12 +1245,12 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 		% if language == "ru" then
 			<h2>Что дальше?</h2>
 			
-			<p>Мы создадим для Вас учётную запись пользователя в DrakonHub.</p>
+			<p>Мы создадим для Вас учётную запись пользователя в <%=application%>.</p>
 			<p>Мы не покажем Ваш email другим посетителям сайта.</p>
 		% else
 			<h2>What happens next?</h2>
 			
-			<p>We will create a user account for you at DrakonHub.</p>
+			<p>We will create a user account for you at <%=application%>.</p>
 			<p>We will not show your email to the outside world.</p>
 		% end
 		</div>
@@ -1286,11 +1275,8 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 		<div class="center" style="padding:10px; padding-top:20px; color:white; max-width:900px; text-align:center; padding-bottom:20px;">
 
 			<div style="height:30px;"></div>
-			% if not on_premises then
-			<p style="text-align:center;"><%=trans("Feedback")%>: <a style="color:white;" href="mailto:drakon.editor@gmail.com">drakon.editor@gmail.com</a></p>
-			<p style="text-align:center;">DRAKON Labs</p>
+			<p style="text-align:center;"><%=trans("Feedback")%>: <a style="color:white;" href="mailto:<%=feedback_email%>"><%=feedback_email%></a></p>
 			<p style="text-align:center;"><a href="/terms" style="color:white;"><%=trans("MES_TERMS")%></a></p>
-			%end
 			<div style="margin:30px;"><a style="color:white; max-width:100px; margin-bottom:30px;" href="#ui"><%=trans("MES_TO_TOP")%></a></div>
 		</div>
 	</div>
@@ -1320,7 +1306,7 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 		<tr style="height:50px;">
 			<td style="width:185px;">
 				<a href="/">
-					<img src="/static/logo-text-img-s-hub.png" width="120" height="40" alt="DrakonHub logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
+					<img src="/static/logo-text-img-s-hub.png" width="120" height="40" alt="<%=application%> logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
 				</a>
 			</td>
 
@@ -1336,12 +1322,8 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 	% else
 	<a href="/ide/dashboard" class="mob_menu_item_link" style="font-weight:bold;"><%=trans("MES_MY_DIAGRAMS")%></a>
 	% end	
-	
-	% if not on_premises then
-	<a href="https://drakonhub.com/read/download" class="mob_menu_item_link" ><%=trans("Download")%></a>
-	<a href="/drakonhub-source" class="mob_menu_item_link" >Source</a>
-	% end
-	<a href="https://drakonhub.com/read/docs" class="mob_menu_item_link" ><%=trans("Documentation")%></a>
+
+	<a href="/read/docs" class="mob_menu_item_link" ><%=trans("Documentation")%></a>
 	
 	% if user_id == "" then
 	<a href="/logon" class="mob_menu_item_link" id="logon_mob"><%=trans("Login")%></a>

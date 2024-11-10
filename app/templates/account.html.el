@@ -754,7 +754,7 @@ h2 {
 			<tr style="height:60px;">
 				<td style="width:185px;">
 					<a href="/">
-						<img src="/static/logo-text-img-s-2-hub.png" width="140" height="40" alt="DrakonHub logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
+						<img src="/static/logo-text-img-s-2-hub.png" width="140" height="40" alt="<%=application%> logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
 					</a>
 				</td>
 
@@ -780,7 +780,7 @@ h2 {
 			<tr style="height:50px;">
 				<td style="width:185px;">
 					<a href="/">
-						<img src="/static/logo-text-img-s-hub.png" width="120" height="40" alt="DrakonHub logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
+						<img src="/static/logo-text-img-s-hub.png" width="120" height="40" alt="<%=application%> logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
 					</a>
 				</td>
 
@@ -965,7 +965,7 @@ h2 {
 		<tr style="height:50px;">
 			<td style="width:185px;">
 				<a href="/">
-					<img src="/static/logo-text-img-s-hub.png" width="120" height="40" alt="DrakonHub logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
+					<img src="/static/logo-text-img-s-hub.png" width="120" height="40" alt="<%=application%> logo" draggable="false" style="vertical-align: middle; margin-left:5px;"></img>
 				</a>
 			</td>
 

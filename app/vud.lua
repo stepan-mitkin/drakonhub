@@ -633,7 +633,7 @@ function send_pass_reset_email(user_id, email, password, language)
     	SUPPORT_EMAIL = global_cfg.feedback_email,
     	APP_URL = global_cfg.my_site,
     	APP_NAME = global_cfg.application,
-    	USER_NAME = user.name,
+    	USER_NAME = user_id,
     	USER_PASSWORD = password
     }
     text = replace_many(text, variables)

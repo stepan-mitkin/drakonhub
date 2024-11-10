@@ -30,7 +30,6 @@ file mkdir /tmp/dewt/app/templates
 file mkdir /tmp/dewt/content
 file mkdir /tmp/dewt/read
 file mkdir /tmp/dewt/data
-file mkdir /tmp/dewt/emails
 file mkdir /tmp/dewt/feedback
 file mkdir /tmp/dewt/journal
 file mkdir /tmp/dewt/logs

@@ -3173,6 +3173,7 @@ function handle_template(req, page, url_language, caching_allowed, cinfo_maker)
         local vars = {
         	math = math,
         	my_site = global_cfg.my_site,
+        	feedback_email = global_cfg.feedback_email,
         	content_path = cinfo.content_path,
         	page_code = cinfo.page_code,
         	title = cinfo.title,

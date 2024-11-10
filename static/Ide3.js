@@ -530,16 +530,6 @@ function buildDashboardWidget(div, node, widget) {
     	goToSpaces,
     	DarkBackground
     )
-    if (onPremises) {
-        
-    } else {
-        createButton(
-        	myPane,
-        	"MES_BUY_SUBSCRIPTION",
-        	goToPrices,
-        	DarkBackground
-        )
-    }
     createLink(
     	myPane,
     	"MES_ACCOUNT",
