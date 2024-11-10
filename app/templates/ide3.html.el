@@ -6,11 +6,7 @@
 <link rel="shortcut icon" href="/static/favicon.ico" />
 <link rel="icon" type="image/png" href="/static/favicon.png" />
 
-<title>DrakonHub</title>
-
-
-
-<!-- Copyright 2018 DRAKON Labs -->
+<title><%=application%></title>
 
 <style>
 /* http://meyerweb.com/eric/tools/css/reset/ 
@@ -603,16 +599,16 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 		<p class="exp"><%=trans("MES_YOU_CAN_COPY_BETWEEN")%></p>
 		<div class="drakon_only">
 			<h2 class="exp"><%=trans("MES_ABOUT_DRAKON")%></h2>
-			<p><a href="https://drakonhub.com/drakon"><%=trans("title-drakon")%></a></p>
-			<p><a href="https://drakonhub.com/how-to-flowchart"><%=trans("title-how-to-flowchart")%></a></p>
-			<p><a href="https://drakonhub.com/drakon-reference"><%=trans("title-drakon-reference")%></a></p>
-			<p><a href="https://drakonhub.com/video-how-to-flowchart"><%=trans("title-video-how-to-flowchart")%></a></p>
-			<p><a href="https://drakonhub.com/drakon-examples"><%=trans("title-drakon-examples")%></a></p>
+			<p><a href="/drakon"><%=trans("title-drakon")%></a></p>
+			<p><a href="/how-to-flowchart"><%=trans("title-how-to-flowchart")%></a></p>
+			<p><a href="/drakon-reference"><%=trans("title-drakon-reference")%></a></p>
+			<p><a href="/video-how-to-flowchart"><%=trans("title-video-how-to-flowchart")%></a></p>
+			<p><a href="/drakon-examples"><%=trans("title-drakon-examples")%></a></p>
 		</div>
 		<div class="mind_only">
 			<h2 class="exp"><%=trans("Mind maps")%></h2>
-			<p><a href="https://drakonhub.com/how-to-mind-map"><%=trans("title-how-to-mind-map")%></a></p>
-			<p><a href="https://drakonhub.com/video-how-to-mind-map"><%=trans("title-video-how-to-mind-map")%></a></p>
+			<p><a href="/how-to-mind-map"><%=trans("title-how-to-mind-map")%></a></p>
+			<p><a href="/video-how-to-mind-map"><%=trans("title-video-how-to-mind-map")%></a></p>
 		</div>	
 	</div>
 </div>
@@ -640,17 +636,17 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 
 	<div class="drakon_only">
 		<h2 class="exp"><%=trans("MES_ABOUT_DRAKON")%></h2>
-		<p><a href="https://drakonhub.com/drakon"><%=trans("title-drakon")%></a></p>
-		<p><a href="https://drakonhub.com/how-to-flowchart"><%=trans("title-how-to-flowchart")%></a></p>
-		<p><a href="https://drakonhub.com/drakon-reference"><%=trans("title-drakon-reference")%></a></p>
-		<p><a href="https://drakonhub.com/video-how-to-flowchart"><%=trans("title-video-how-to-flowchart")%></a></p>
-		<p><a href="https://drakonhub.com/drakon-examples"><%=trans("title-drakon-examples")%></a></p>
+		<p><a href="/drakon"><%=trans("title-drakon")%></a></p>
+		<p><a href="/how-to-flowchart"><%=trans("title-how-to-flowchart")%></a></p>
+		<p><a href="/drakon-reference"><%=trans("title-drakon-reference")%></a></p>
+		<p><a href="/video-how-to-flowchart"><%=trans("title-video-how-to-flowchart")%></a></p>
+		<p><a href="/drakon-examples"><%=trans("title-drakon-examples")%></a></p>
 	</div>	
 	
 	<div class="mind_only">
 		<h2 class="exp"><%=trans("Mind maps")%></h2>
-		<p><a href="https://drakonhub.com/how-to-mind-map"><%=trans("title-how-to-mind-map")%></a></p>
-		<p><a href="https://drakonhub.com/video-how-to-mind-map"><%=trans("title-video-how-to-mind-map")%></a></p>
+		<p><a href="/how-to-mind-map"><%=trans("title-how-to-mind-map")%></a></p>
+		<p><a href="/video-how-to-mind-map"><%=trans("title-video-how-to-mind-map")%></a></p>
 	</div>		
 </div>
 

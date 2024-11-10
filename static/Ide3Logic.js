@@ -1,4 +1,4 @@
-function Ide3Logic(gUserId, browser, translate) {
+function Ide3Logic(gUserId, browser, translate, appName) {
 
 var IDE = "ide"
 
@@ -6,7 +6,7 @@ var MinSplitter = 30
 var ProjectsPath = "/" + IDE + "/spaces"
 
 var globs = null
-var AppName = "DrakonHub"
+var AppName = appName
 
 var PollInterval = 1
 var MaxSaveItems = 30
@@ -2850,7 +2850,7 @@ function buildMainMenu() {
         	}
         )
     }
-    var host = "https://drakonhub.com"
+    var host = ""
     var learnItems = []
     if (shouldShowDemo()) {
         learnItems.push(
@@ -4124,15 +4124,11 @@ function initNormal(parts, target) {
 }
 
 function initTryMe(target) {
-    if (gUserId) {
-        browser.goToUrl("/")
-    } else {
-        startMachine(
-            new TryMeLoader(),
-            null,
-            target
-        )
-    }
+    startMachine(
+        new TryMeLoader(),
+        null,
+        target
+    )
 }
 
 function isAnyCurrent(folders) {

@@ -1,18 +1,18 @@
-Welcome to DrakonHub!
+Welcome to APP_NAME!
 
-You have created an account with DrakonHub.
+You have created an account with APP_NAME.
 
 Your user name is VALUE_USER
 Your password is VALUE_PASSWORD
 
-Customer support: drakon.editor@gmail.com
+Customer support: SUPPORT_EMAIL
 
 We hope that you will enjoy drawing diagrams in our application.
-If you have a suggestion on how to improve DrakonHub, let us know!
+If you have a suggestion on how to improve APP_NAME, let us know!
 We will be happy to add the features that you need.
 
 Regards
 
-DrakonHub team
-https://drakonhub.com/
+APP_NAME team
+APP_URL
 

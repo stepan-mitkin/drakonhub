@@ -9,9 +9,9 @@
 
 
 % if language == "ru" then
-<title>Добро пожаловать в DrakonHub</title>
+<title>Добро пожаловать в <%=application%></title>
 % else
-<title>Welcome to DrakonHub</title>
+<title>Welcome to <%=application%></title>
 % end
 
 
@@ -305,7 +305,7 @@ a.panic_button {
 <div id="ui" style="max-width: 600px; padding-left:10px; padding-right:10px; display:none;" class="center">
 % if language == "ru" then
 
-<h1 style="margin-top:10px;">Добро пожаловать в DrakonHub!</h1>
+<h1 style="margin-top:10px;">Добро пожаловать в <%=application%>!</h1>
 
 <div class="illistration" style="margin-top:20px; margin-bottom:20px; text-align:center;">
 <a href="/"><img src="/static/drakosha132.png" width="132" height="132"></img></a>
@@ -331,7 +331,7 @@ a.panic_button {
 
 % else
 
-<h1 style="margin-top:10px;">Welcome to DrakonHub!</h1>
+<h1 style="margin-top:10px;">Welcome to <%=application%>!</h1>
 
 <div class="illistration" style="margin-top:20px; margin-bottom:20px; text-align:center;">
 <a href="/"><img src="/static/drakosha132.png" width="132" height="132"></img></a>

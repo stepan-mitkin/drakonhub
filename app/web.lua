@@ -4062,6 +4062,9 @@ function send_welcome_email(user_id, language, password)
     	"MES_WELCOME"
     )
     local variables = {
+    	SUPPORT_EMAIL = global_cfg.feedback_email,
+    	APP_URL = global_cfg.my_site,
+    	APP_NAME = global_cfg.application,
     	VALUE_USER = user.name,
     	VALUE_PASSWORD = password
     }

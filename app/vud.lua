@@ -568,6 +568,13 @@ function refresh_session(session)
     db.session_update(session_id, user_id, sdata)
 end
 
+function replace_many(text, what)
+    for key, value in pairs(what) do
+        text = text:gsub(key, value)
+    end
+    return text
+end
+
 function reset_password(id_email, session_id, language)
     local user = find_user(id_email)
     if user then
@@ -614,18 +621,23 @@ function reset_session(old_session_id, sdata, user_id, email, udata)
 end
 
 function send_pass_reset_email(user_id, email, password, language)
-    local htmlRaw = mail.get_template(
+    local html = mail.get_template(
     	language,
     	"reset.html"
     )
-    local textRaw = mail.get_template(
+    local text = mail.get_template(
     	language,
     	"reset.txt"
     )
-    local html = htmlRaw:gsub("USER_PASSWORD", password)
-    html = html:gsub("USER_NAME", user_id)
-    local text = textRaw:gsub("USER_PASSWORD", password)
-    text = text:gsub("USER_NAME", user_id)
+    local variables = {
+    	SUPPORT_EMAIL = global_cfg.feedback_email,
+    	APP_URL = global_cfg.my_site,
+    	APP_NAME = global_cfg.application,
+    	USER_NAME = user.name,
+    	USER_PASSWORD = password
+    }
+    text = replace_many(text, variables)
+    html = replace_many(html, variables)
     local subject = trans.translate(
     	language,
     	"index",

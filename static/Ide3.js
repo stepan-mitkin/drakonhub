@@ -550,7 +550,7 @@ function buildDashboardWidget(div, node, widget) {
     	"MES_HOMEPAGE",
     	"/"
     )
-    var host = "https://drakonhub.com"
+    var host = ""
     docs.style.borderTop = bStyle
     createLink(
     	docs,

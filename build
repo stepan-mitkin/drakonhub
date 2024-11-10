@@ -92,12 +92,6 @@ if { $resources } {
 
 file copy -force $dir/emails /tmp/dewt/emails
 
-file copy -force $dir/docs/readme.txt /tmp/dewt/docs
-file copy -force $dir/docs/install_tarantool.txt /tmp/dewt/docs
-file copy -force $dir/docs/install_drakonhub.txt /tmp/dewt/docs
-file copy -force $dir/docs/setup_ssl.txt /tmp/dewt/docs
-
-
 set f [open /tmp/dewt/app/version.txt wb]
 puts $f $build_id
 close $f

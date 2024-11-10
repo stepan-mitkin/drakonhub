@@ -1,10 +1,10 @@
 Password reset
 
-You have requested to reset your password for DrakonHub.
+You have requested to reset your password for APP_NAME.
 User name: USER_NAME
 New password: USER_PASSWORD
 
 Regards
 
-DrakonHub team
-https://drakonhub.com/
+APP_NAME team
+APP_URL
