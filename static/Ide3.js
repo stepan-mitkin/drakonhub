@@ -540,12 +540,12 @@ function buildDashboardWidget(div, node, widget) {
     	"MES_HOMEPAGE",
     	"/"
     )
-    var host = ""
+    var host = "/read"
     docs.style.borderTop = bStyle
     createLink(
     	docs,
     	"MES_DOCUMENTATION",
-    	host + "/read/docs"
+    	host + "/docs"
     )
     createLink(
     	docs,
@@ -555,7 +555,7 @@ function buildDashboardWidget(div, node, widget) {
     createLink(
     	docs,
     	"title-guidelines",
-    	host + "/read/guidelines-for-drawing-drakon"
+    	host + "/guidelines-for-drawing-drakon"
     )
     createLink(
     	docs,

@@ -599,16 +599,13 @@ carrotquest.onReady(function () { carrotquest.removeChat(); });
 		<p class="exp"><%=trans("MES_YOU_CAN_COPY_BETWEEN")%></p>
 		<div class="drakon_only">
 			<h2 class="exp"><%=trans("MES_ABOUT_DRAKON")%></h2>
-			<p><a href="/drakon"><%=trans("title-drakon")%></a></p>
-			<p><a href="/how-to-flowchart"><%=trans("title-how-to-flowchart")%></a></p>
-			<p><a href="/drakon-reference"><%=trans("title-drakon-reference")%></a></p>
-			<p><a href="/video-how-to-flowchart"><%=trans("title-video-how-to-flowchart")%></a></p>
-			<p><a href="/drakon-examples"><%=trans("title-drakon-examples")%></a></p>
+			<p><a href="/read/drakon"><%=trans("title-drakon")%></a></p>			
+			<p><a href="/read/drakon-reference"><%=trans("title-drakon-reference")%></a></p>
+			<p><a href="/read/video-how-to-flowchart"><%=trans("title-video-how-to-flowchart")%></a></p>
 		</div>
 		<div class="mind_only">
 			<h2 class="exp"><%=trans("Mind maps")%></h2>
-			<p><a href="/how-to-mind-map"><%=trans("title-how-to-mind-map")%></a></p>
-			<p><a href="/video-how-to-mind-map"><%=trans("title-video-how-to-mind-map")%></a></p>
+			<p><a href="/read/video-how-to-mind-map"><%=trans("title-video-how-to-mind-map")%></a></p>
 		</div>	
 	</div>
 </div>
