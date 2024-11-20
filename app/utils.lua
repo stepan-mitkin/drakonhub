@@ -260,9 +260,11 @@ function days_to_secs(days)
 end
 
 function ends_with(what, with)
-    local start = #what - #with + 1
+    local walen = utf8.len(what)
+    local wilen = utf8.len(with)
+    local start = walen - wilen + 1
     if start > 0 then
-        local sub = utf8.sub(what, start, #what)
+        local sub = utf8.sub(what, start, walen)
         return sub == with
     else
         return false
